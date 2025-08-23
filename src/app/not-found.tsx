@@ -22,15 +22,6 @@ export default function NotFound() {
       >
         Back to Home
       </Link>
-
-      {/* Optional image or illustration */}
-      <div className="mt-10 max-w-xs md:max-w-md">
-        <img
-          src="/images/404-illustration.svg" 
-          alt="404 Illustration"
-          className="w-full"
-        />
-      </div>
     </div>
   );
 }

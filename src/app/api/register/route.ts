@@ -86,7 +86,6 @@ export async function POST(req: Request) {
       });
     }
 
-
     // Save user to DB after email success
     const user = await User.create({
       firstName,
@@ -103,8 +102,12 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true, user });
-  } catch (error: any) {
-    console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    console.error("Unknown error", error);
+    return NextResponse.json({ error: "Unknown error" }, { status: 500 });
   }
 }
