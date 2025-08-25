@@ -122,15 +122,36 @@ export default function RegistrationPage() {
   return (
     <section className="bg-white py-16 min-h-screen">
       <div className="max-w-6xl mx-auto px-6 lg:px-8">
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-3xl md:text-4xl font-bold text-[#470184] mb-6 text-center"
-        >
-          Salt and Light Conference 2025 Registration
-        </motion.h1>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="flex justify-center items-center gap-4 mb-6"
+      >
+        <div className="flex justify-center items-center gap-6 mb-6">
+          {/* Image container with black background */}
+          <div
+            className="bg-black"
+            style={{ width: '120px', height: '103px' }} // scales down from 1236x1060 roughly 1:10
+          >
+            <Image
+              src="/events/logo.png"
+              alt="Event Logo"
+              width={1236}
+              height={1060}
+              style={{ objectFit: 'contain' }}
+              className="block"
+            />
+          </div>
+
+          {/* Registration text */}
+          <h1 className="text-3xl md:text-4xl font-bold">
+            Registration
+          </h1>
+        </div>
+      </motion.div>
+
 
         {/* Intro Text */}
         <motion.div
@@ -144,10 +165,10 @@ export default function RegistrationPage() {
           We’re so excited to have you join us!
           </h2>
           <p className="text-gray-600">
-          Please take a moment to fill out the registration form below to secure your spot at this year’s conference. Whether you’re attending for the first time or returning, we can’t wait to experience all that God has in store—together.
+          Please take a moment to fill out the registration form below to secure your spot at this year’s convocation. Whether you’re attending for the first time or returning, we can’t wait to experience all that God has in store—together.
           </p>
           <p className="text-gray-600">
-          If you’d like to be part of the team that helps bring Salt and Light Conference 2025 to life, there’s also an option to sign up as a volunteer. From welcoming guests to helping with logistics or prayer support, there’s a place for you to serve and make a difference.
+          If you’d like to be part of the team that helps bring Salt and Light 2025 to life, there’s also an option to sign up as a volunteer. From welcoming guests to helping with logistics or prayer support, there’s a place for you to serve and make a difference.
           </p>
         </motion.div>
 
@@ -156,7 +177,7 @@ export default function RegistrationPage() {
           <div className="lg:w-1/3 w-full flex-shrink-0">
             <Image
               src="/events/hero.png"
-              alt="Salt and Light Conference 2025 Flyer"
+              alt="Salt and Light 2025 Flyer"
               width={4200}
               height={2400}
               layout="responsive"
@@ -250,7 +271,7 @@ export default function RegistrationPage() {
             </div>
 
             {/* Certificated Training */}
-            <div>
+            <div className="hidden">
               <label className="block text-gray-700 font-medium mb-2">
                 Certificated Training
               </label>
