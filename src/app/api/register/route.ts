@@ -67,19 +67,19 @@ export async function POST(req: Request) {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: `Salt and Light Conference ${year} Registration`,
+      subject: `Salt and Light ${year} Registration`,
       html: `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #6a0dad; border-radius: 8px; overflow: hidden;">
         
         <!-- Header -->
         <div style="background-color: #6a0dad; padding: 15px 0; text-align: center;">
-          <img src="https://slt.onrender.com/events/hero.png" alt="Salt and Light Conference" style="max-width: 100%; height: auto; border-radius: 4px;" />
+          <img src="https://slt.onrender.com/events/hero.png" alt="Salt and Light" style="max-width: 100%; height: auto; border-radius: 4px;" />
         </div>
         
         <!-- Content -->
         <div style="padding: 30px 40px; color: #333;">
           <h3 style="color: #6a0dad; margin-top: 0;">Hi ${firstName},</h3>
-          <p style="font-size: 16px;">Your registration for <strong>Salt and Light Conference ${year}</strong> is successful!</p>
+          <p style="font-size: 16px;">Your registration for <strong>Salt and Light ${year}</strong> is successful!</p>
           <p style="font-size: 16px;"><strong style="color: #6a0dad;">Your Unique ID:</strong> ${uniqueId}</p>
           <p style="font-size: 16px;">Please keep this ID safe. It will be used for identification at the event.</p>
           <p style="font-size: 16px;">Also, please scan or show the attached QR code for quick check-in.</p>
