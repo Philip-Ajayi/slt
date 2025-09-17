@@ -1,19 +1,31 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/mongodb";
 import { User } from "@/models/User";
+import { Counter } from "@/models/Counter";
 import nodemailer from "nodemailer";
 import QRCode from "qrcode";
 
+// ✅ Atomic Unique ID Generator
 async function generateUniqueId(year: number): Promise<string> {
   const prefix = `SLT${year}`;
 
-  // Count how many users have registered this year
-  const count = await User.countDocuments({ year });
+  let counter = await Counter.findOneAndUpdate(
+    { year },
+    { $inc: { seq: 1 } },
+    { new: true }
+  );
 
-  // Increment starting at 101
-  const nextNumber = 101 + count;
+  if (!counter) {
+    await Counter.create({ year, seq: 200 });
+    counter = await Counter.findOneAndUpdate(
+      { year },
+      { $inc: { seq: 1 } },
+      { new: true }
+    );
+  }
 
-  return `${prefix}${nextNumber}`;
+
+  return `${prefix}${counter.seq}`;
 }
 
 export async function POST(req: Request) {
@@ -30,11 +42,21 @@ export async function POST(req: Request) {
       schoolOfMinistry = "",
       volunteerRole = "",
       accommodation = "",
+      gender = "",
+      status = "none",
     } = await req.json();
 
     const year = new Date().getFullYear();
 
-    // Check if user already registered this year
+    // ✅ Require gender only if accommodation is given
+    if (accommodation && !gender) {
+      return NextResponse.json(
+        { error: "Gender is required when accommodation is requested." },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Check if user already registered this year
     const existing = await User.findOne({ email, year });
     if (existing) {
       return NextResponse.json(
@@ -43,16 +65,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // Generate the unique ID for this user for the year
+    // ✅ Generate unique ID
     const uniqueId = await generateUniqueId(year);
 
-    // Construct the URL using the uniqueId instead of email
+    // ✅ Construct QR code URL
     const qrUrl = `https://slt.mivwordhouse.com/register/${uniqueId}`;
-
-    // Generate QR code as a Buffer
     const qrBuffer = await QRCode.toBuffer(qrUrl, { width: 200 });
 
-    // Setup Nodemailer transporter for Zoho SMTP
+    // ✅ Setup Nodemailer transporter
     const transporter = nodemailer.createTransport({
       host: "smtp.zoho.com",
       port: 465,
@@ -63,7 +83,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // Send registration confirmation email with QR code and unique ID
+    // ✅ Send confirmation email (gender & status not included)
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
@@ -95,13 +115,11 @@ export async function POST(req: Request) {
   
           <p style="font-size: 16px; color: #6a0dad; font-weight: 600;">Thank you!</p>
           
-          <!-- Link outside footer -->
           <p style="text-align: center; margin-top: 40px; font-size: 14px; color: #6a0dad;">
             You can visit us at <a href="http://www.mivwordhouse.com" target="_blank" style="color: #4b0082; text-decoration: none; font-weight: bold;">http://www.mivwordhouse.com</a>
           </p>
         </div>
   
-        <!-- Footer -->
         <footer style="background-color: #f0f0f0; text-align: center; font-size: 12px; color: #666; padding: 15px 0; border-top: 1px solid #ddd;">
           &copy; MIV Word House
         </footer>
@@ -116,11 +134,11 @@ export async function POST(req: Request) {
       ],
     });
 
-    // Notify Philip if user is a volunteer
+    // ✅ Notify admin if user is a volunteer
     if (volunteerRole && volunteerRole.trim() !== "") {
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
-        to: "adeguntimileyin6@gmail.com",
+        to: process.env.ADMIN_EMAIL || "adeguntimileyin6@gmail.com",
         subject: `New Volunteer Registration: ${firstName} ${lastName}`,
         html: `
           <h3>New Volunteer Registered</h3>
@@ -132,7 +150,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // Save user with uniqueId in the database
+    // ✅ Save user in DB
     const user = await User.create({
       firstName,
       lastName,
@@ -143,6 +161,8 @@ export async function POST(req: Request) {
       schoolOfMinistry,
       volunteerRole,
       accommodation,
+      gender,
+      status,
       year,
       subscribed: true,
       uniqueId,
@@ -152,6 +172,15 @@ export async function POST(req: Request) {
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error(error);
+
+      // ✅ Handle duplicate key error
+      if ((error as any).code === 11000) {
+        return NextResponse.json(
+          { error: "Duplicate registration detected. Please try again." },
+          { status: 400 }
+        );
+      }
+
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     console.error("Unknown error", error);

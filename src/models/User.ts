@@ -1,5 +1,3 @@
-// models/User.ts
-
 import mongoose, { Schema, model, models } from "mongoose";
 
 const AttendanceSchema = new Schema({
@@ -19,8 +17,14 @@ const UserSchema = new Schema(
     schoolOfMinistry: { type: String },
     volunteerRole: { type: String, default: "" },
     accommodation: { type: String },
+    gender: { type: String }, // required if accommodation is provided
+    status: {
+      type: String,
+      enum: ["firsttime", "member", "none"],
+      default: "none",
+    },
     year: { type: Number, required: true },
-    uniqueId: { type: String, required: true }, // removed unique: true
+    uniqueId: { type: String, required: true },
     subscribed: { type: Boolean, default: true },
     attendance: [AttendanceSchema],
   },
@@ -29,8 +33,6 @@ const UserSchema = new Schema(
 
 // ✅ Compound index: Unique ID per year
 UserSchema.index({ year: 1, uniqueId: 1 }, { unique: true });
-
-// ✅ Optional (already exists, but you can keep it)
 UserSchema.index({ year: 1 });
 
 export const User = models.User || model("User", UserSchema);
