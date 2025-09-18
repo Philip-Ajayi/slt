@@ -36,7 +36,7 @@ const features = [
       "It fosters Christian entrepreneurship, economic empowerment, and kingdom-driven innovation.",
       "Expect booths with books, crafts, fashion, food, tech, and more—alongside powerful networking opportunities."
     ],
-    image: "",
+    image: "https://nepc.gov.ng/cms/wp-content/uploads/2018/07/NEPC-International-Trade-Fair.jpg",
   },
   {
     title: "Influence Night",

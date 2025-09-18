@@ -5,7 +5,26 @@ import { Counter } from "@/models/Counter";
 import nodemailer from "nodemailer";
 import QRCode from "qrcode";
 
-// ✅ Atomic Unique ID Generator
+interface RegisterPayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  location: string;
+  whatsapp: string;
+  certificatedTraining?: string;
+  schoolOfMinistry?: string;
+  volunteerRole?: string;
+  accommodation?: string;
+  gender?: string;
+  status?: "firsttime" | "member" | "none";
+}
+
+// Type guard for mongo errors with a code property
+function isMongoError(error: unknown): error is { code?: number } {
+  return typeof error === "object" && error !== null && "code" in error;
+}
+
+// Atomic Unique ID Generator
 async function generateUniqueId(year: number): Promise<string> {
   const prefix = `SLT${year}`;
 
@@ -23,7 +42,6 @@ async function generateUniqueId(year: number): Promise<string> {
       { new: true }
     );
   }
-
 
   return `${prefix}${counter.seq}`;
 }
@@ -44,11 +62,11 @@ export async function POST(req: Request) {
       accommodation = "",
       gender = "",
       status = "none",
-    } = await req.json();
+    } = (await req.json()) as RegisterPayload;
 
     const year = new Date().getFullYear();
 
-    // ✅ Require gender only if accommodation is given
+    // Require gender only if accommodation is given
     if (accommodation && !gender) {
       return NextResponse.json(
         { error: "Gender is required when accommodation is requested." },
@@ -56,7 +74,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Check if user already registered this year
+    // Check if user already registered this year
     const existing = await User.findOne({ email, year });
     if (existing) {
       return NextResponse.json(
@@ -65,14 +83,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Generate unique ID
+    // Generate unique ID
     const uniqueId = await generateUniqueId(year);
 
-    // ✅ Construct QR code URL
+    // Construct QR code URL
     const qrUrl = `https://slt.mivwordhouse.com/register/${uniqueId}`;
     const qrBuffer = await QRCode.toBuffer(qrUrl, { width: 200 });
 
-    // ✅ Setup Nodemailer transporter
+    // Setup Nodemailer transporter
     const transporter = nodemailer.createTransport({
       host: "smtp.zoho.com",
       port: 465,
@@ -83,7 +101,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // ✅ Send confirmation email (gender & status not included)
+    // Send confirmation email (gender & status not included)
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
@@ -134,7 +152,7 @@ export async function POST(req: Request) {
       ],
     });
 
-    // ✅ Notify admin if user is a volunteer
+    // Notify admin if user is a volunteer
     if (volunteerRole && volunteerRole.trim() !== "") {
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
@@ -150,7 +168,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // ✅ Save user in DB
+    // Save user in DB
     const user = await User.create({
       firstName,
       lastName,
@@ -173,8 +191,7 @@ export async function POST(req: Request) {
     if (error instanceof Error) {
       console.error(error);
 
-      // ✅ Handle duplicate key error
-      if ((error as any).code === 11000) {
+      if (isMongoError(error) && error.code === 11000) {
         return NextResponse.json(
           { error: "Duplicate registration detected. Please try again." },
           { status: 400 }
