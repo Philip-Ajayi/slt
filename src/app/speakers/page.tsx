@@ -23,7 +23,7 @@ const ministersData = [
   },
   {
     name: "Apostle Toluwalogo Agboola",
-    title: "",
+    title: "Founder of His Worship Christian Network (HWCN Global)",
     image: "/ministers/Agboola.png",
     biography: [],
   },
@@ -84,12 +84,9 @@ const ministersData = [
     name: "Evang. Omolara Ayoola",
     title: "",
     image: "/ministers/Ayoola.png",
-    biography: [
-      "",
-    ],
+    biography: [""],
   },
 ];
-
 
 export default function SpeakersPage() {
   return (

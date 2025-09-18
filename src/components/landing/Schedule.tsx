@@ -11,40 +11,40 @@ const days = [
   {
     day: "Day 2 (Tuesday)",
     sessions: [
-      { tag: "Shiftings and Turnings", time: "6:00 AM", available: true },
+      { tag: "Shiftings and Turnings", time: "6:30 AM", available: true },
       { tag: "Certified Trainings", time: "11:00 AM", available: true },
       { tag: "School of Ministry", time: "1:30 PM", available: true },
-      { tag: "Exhibition", time: "4:00 PM", available: true },
+      { tag: "Exhibition", time: "3:00 PM", available: true },
       { tag: "Influence Night", time: "5:30 PM", available: true },
     ],
   },
   {
     day: "Day 3 (Wednesday)",
     sessions: [
-      { tag: "Shiftings and Turnings", time: "6:00 AM", available: true },
+      { tag: "Shiftings and Turnings", time: "6:30 AM", available: true },
       { tag: "Certified Trainings", time: "11:00 AM", available: true },
       { tag: "School of Ministry", time: "1:30 PM", available: true },
-      { tag: "Exhibition", time: "4:00 PM", available: true },
+      { tag: "Exhibition", time: "3:00 PM", available: true },
       { tag: "Influence Night", time: "5:30 PM", available: true },
     ],
   },
   {
     day: "Day 4 (Thursday)",
     sessions: [
-      { tag: "Shiftings and Turnings", time: "6:00 AM", available: true },
+      { tag: "Shiftings and Turnings", time: "6:30 AM", available: true },
       { tag: "Certified Trainings", time: "11:00 AM", available: true },
       { tag: "School of Ministry", time: "1:30 PM", available: true },
-      { tag: "Exhibition", time: "4:00 PM", available: true },
+      { tag: "Exhibition", time: "3:00 PM", available: true },
       { tag: "Influence Night", time: "5:30 PM", available: true },
     ],
   },
   {
     day: "Day 5 (Friday)",
     sessions: [
-      { tag: "Shiftings and Turnings", time: "6:00 AM", available: true },
+      { tag: "Shiftings and Turnings", time: "6:30 AM", available: true },
       { tag: "Certified Trainings", time: "11:00 AM", available: true },
       { tag: "School of Ministry", time: "1:30 PM", available: true },
-      { tag: "Exhibition", time: "4:00 PM", available: true },
+      { tag: "Exhibition", time: "3:00 PM", available: true },
       { tag: "Influence Night", time: "5:30 PM", available: true },
     ],
   },

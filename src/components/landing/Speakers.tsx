@@ -10,12 +10,12 @@ const ministers = [
   },
   {
     name: "Pastor Ope Rowland",
-    title: "Host",
+    title: "Lead Pastor, MIV Word House, Host",
     image: "/ministers/Rowland.png",
   },
   {
     name: "Apostle Toluwalogo Agboola",
-    title: "",
+    title: "Founder of His Worship Christian Network (HWCN Global)",
     image: "/ministers/Agboola.png",
   },
   {
@@ -77,8 +77,8 @@ export default function Speakers() {
                     fill
                     sizes="100vw"
                     style={{ objectFit: "cover", objectPosition: "top" }}
-                    loading="lazy"
-                    priority={i < 4} // prioritize first few images for faster load
+                    priority={i < 4}
+                    loading={i >= 4 ? "lazy" : undefined}
                   />
                 </div>
               ) : (

@@ -28,7 +28,7 @@ export default function Footer() {
             priority
           />
           <h3 className="text-xl font-bold mb-2">
-            “A convocation of and for influence on World Mountains”
+            “A convocation of and for influence in the World Mountains”
           </h3>
           <p className="text-sm mb-1">📍 Word House, Behind Accord Building, Obadeyi Estate Samonda Ibadan</p>
           <p className="text-sm mb-1">📧 contact@mivwordhouse.com</p>
