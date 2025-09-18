@@ -13,7 +13,7 @@ export default function Hero() {
         src="/main/flier.png"
         alt="Salt and Light 2025 Conference"
         fill
-        className="object-cover opacity-40"
+        className="object-cover object-top opacity-40"
         priority
       />
       <motion.div

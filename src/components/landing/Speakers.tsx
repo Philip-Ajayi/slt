@@ -31,7 +31,7 @@ const ministers = [
   {
     name: "Joshua Mike-Bamiloye",
     title: "Gospel Singer, Filmmaker & Evangelist",
-    image: "/ministers/Bamiloye.jpg",
+    image: "/ministers/Bamiloye.png",
   },
   {
     name: "Dr. Olayinka Kotila",
@@ -46,12 +46,12 @@ const ministers = [
   {
     name: "Dr. Lola Ayo-Fashida",
     title: "Finance & Management Consultant",
-    image: "", // No image provided
+    image: "/ministers/Fashida", 
   },
   {
     name: "Evang. Omolara Ayoola",
     title: "",
-    image: "", // No image provided
+    image: "/ministers/Ayoola.png",
   },
 ];
 

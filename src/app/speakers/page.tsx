@@ -46,7 +46,7 @@ const ministersData = [
   {
     name: "Joshua Mike-Bamiloye",
     title: "Gospel Singer, Filmmaker & Evangelist",
-    image: "/ministers/Bamiloye.jpg",
+    image: "/ministers/Bamiloye.png",
     biography: [
       "He is a gospel singer and film maker, graphic designer and an evangelist.",
     ],
