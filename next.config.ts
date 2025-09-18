@@ -2,7 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["menofissacharvision.com", "nepc.gov.ng"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "menofissacharvision.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "nepc.gov.ng",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 
