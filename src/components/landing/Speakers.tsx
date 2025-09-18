@@ -46,7 +46,7 @@ const ministers = [
   {
     name: "Dr. Lola Ayo-Fashida",
     title: "Finance & Management Consultant",
-    image: "/ministers/Fashida", 
+    image: "/ministers/Fashida.png", 
   },
   {
     name: "Evang. Omolara Ayoola",

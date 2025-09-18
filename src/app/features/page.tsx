@@ -51,11 +51,11 @@ const features = [
 
 export default function FeaturesPage() {
   return (
-    <div className="bg-purple-50">
+    <div className="bg-purple-50 overflow-x-hidden">
       <header className="py-20 text-center">
-        <h1 className="text-5xl font-extrabold text-purple-800">Features of the Conference</h1>
+        <h1 className="text-5xl font-extrabold text-purple-800">Features of the Salt and Light</h1>
         <p className="text-purple-700 mt-4 text-lg max-w-2xl mx-auto">
-          Discover what makes our conference an unforgettable experience.
+          Discover what makes Salt and Light an unforgettable experience.
         </p>
       </header>
 

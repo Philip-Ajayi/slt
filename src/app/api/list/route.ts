@@ -16,7 +16,8 @@ export async function GET(req: Request) {
     const query: FilterQuery<IUser> = { year };
 
     if (accommodation === "true") {
-      query.accommodation = "yes"; // fetch only users with accommodation === "yes"
+      // Case-insensitive exact match for 'yes'
+      query.accommodation = { $regex: /^yes$/i };
     }
 
     const users = await User.find(query).lean();

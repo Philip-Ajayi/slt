@@ -12,6 +12,7 @@ const toggleRoutes = ["Register", "Volunteer"];
 
 export default function Navbar() {
   const [toggleIndex, setToggleIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -20,18 +21,26 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
+  // Close mobile menu on route/link click
+  function handleLinkClick() {
+    setIsOpen(false);
+  }
+
   return (
     <Disclosure
       as="nav"
       className="bg-gradient-to-r from-purple-800 via-purple-700 to-purple-900 fixed w-full z-50 shadow-lg"
+      // Control open state manually
+      open={isOpen}
+      onChange={setIsOpen}
     >
-      {({ open }) => (
+      {() => (
         <>
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
             <div className="flex h-16 justify-between items-center">
               {/* Left: Logo + Date */}
               <div className="flex items-center space-x-4">
-                <Link href="/" className="flex items-center">
+                <Link href="/" className="flex items-center" onClick={handleLinkClick}>
                   <Image
                     src="/main/sltlogo.png"
                     alt="Supernatural Conference Logo"
@@ -53,6 +62,7 @@ export default function Navbar() {
                     key={route}
                     href={`/${route.toLowerCase()}`}
                     className="text-purple-100 hover:text-white px-4 py-2 rounded-md font-medium transition duration-300 bg-purple-700 hover:bg-purple-600 shadow-sm hover:shadow-lg"
+                    onClick={handleLinkClick}
                   >
                     {route}
                   </Link>
@@ -63,6 +73,7 @@ export default function Navbar() {
                   href="/register"
                   className="relative inline-block px-4 py-2 font-semibold text-white rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 shadow-lg hover:brightness-110 transition duration-300"
                   aria-label="Register or Volunteer"
+                  onClick={handleLinkClick}
                 >
                   <AnimatePresence mode="wait">
                     <motion.span
@@ -83,8 +94,11 @@ export default function Navbar() {
 
               {/* Right: Mobile Menu Button */}
               <div className="md:hidden -mr-2">
-                <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-purple-200 hover:text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-white">
-                  {open ? (
+                <Disclosure.Button
+                  className="inline-flex items-center justify-center p-2 rounded-md text-purple-200 hover:text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-white"
+                  onClick={() => setIsOpen(!isOpen)}
+                >
+                  {isOpen ? (
                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                   ) : (
                     <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -95,26 +109,29 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu Panel */}
-          <Disclosure.Panel className="md:hidden bg-purple-800 shadow-inner">
-            <div className="px-4 pt-4 pb-6 space-y-1">
-              {[...staticRoutes, "Register", "Volunteer"].map((route) => {
-                // Fix volunteer to /register
-                const href = route === "Volunteer" ? "/register" : `/${route.toLowerCase()}`;
-                return (
-                  <Link
-                    key={route}
-                    href={href}
-                    className="block px-4 py-3 rounded-md font-semibold text-white hover:bg-purple-700 hover:text-pink-300 transition"
-                  >
-                    {route}
-                  </Link>
-                );
-              })}
-              <div className="mt-4 px-4 py-2 text-purple-300 font-semibold text-center text-sm select-none">
-                October 13 - 17, 2025
+          {isOpen && (
+            <Disclosure.Panel className="md:hidden bg-purple-800 shadow-inner">
+              <div className="px-4 pt-4 pb-6 space-y-1">
+                {[...staticRoutes, "Register", "Volunteer"].map((route) => {
+                  // Fix volunteer to /register
+                  const href = route === "Volunteer" ? "/register" : `/${route.toLowerCase()}`;
+                  return (
+                    <Link
+                      key={route}
+                      href={href}
+                      className="block px-4 py-3 rounded-md font-semibold text-white hover:bg-purple-700 hover:text-pink-300 transition"
+                      onClick={handleLinkClick}
+                    >
+                      {route}
+                    </Link>
+                  );
+                })}
+                <div className="mt-4 px-4 py-2 text-purple-300 font-semibold text-center text-sm select-none">
+                  October 13 - 17, 2025
+                </div>
               </div>
-            </div>
-          </Disclosure.Panel>
+            </Disclosure.Panel>
+          )}
         </>
       )}
     </Disclosure>
