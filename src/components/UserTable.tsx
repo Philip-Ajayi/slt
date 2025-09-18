@@ -1,4 +1,3 @@
-// components/UserTable.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -53,11 +52,20 @@ export default function UserTable({
       );
       const data = await res.json();
 
-      // Optional: filter out MongoDB metadata
-      const cleaned = data.map((user: any) => {
+      // Safely map data without any
+      const cleaned = data.map((user: unknown) => {
         const filtered: Partial<User> = {};
-        for (const key of DISPLAY_COLUMNS) {
-          filtered[key] = user[key];
+        if (typeof user === "object" && user !== null) {
+          for (const key of DISPLAY_COLUMNS) {
+            const value = (user as Record<string, unknown>)[key];
+            if (
+              typeof value === "string" ||
+              typeof value === "number" ||
+              value === undefined
+            ) {
+              filtered[key] = value as never;
+            }
+          }
         }
         return filtered;
       });

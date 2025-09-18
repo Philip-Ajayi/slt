@@ -12,7 +12,9 @@ export default function ContactForm() {
     message: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -39,8 +41,13 @@ export default function ContactForm() {
       }
 
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err.message);
+      setFormData({ name: "", email: "", message: "" });
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -66,7 +73,11 @@ export default function ContactForm() {
             transition={{ duration: 0.6 }}
             className="bg-white rounded-2xl shadow-lg p-8 grid grid-cols-1 gap-6"
           >
+            <label htmlFor="name" className="sr-only">
+              Your Name
+            </label>
             <input
+              id="name"
               name="name"
               type="text"
               placeholder="Your Name"
@@ -76,7 +87,12 @@ export default function ContactForm() {
               className="w-full p-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 outline-none"
               disabled={loading}
             />
+
+            <label htmlFor="email" className="sr-only">
+              Your Email
+            </label>
             <input
+              id="email"
               name="email"
               type="email"
               placeholder="Your Email"
@@ -86,7 +102,12 @@ export default function ContactForm() {
               className="w-full p-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 outline-none"
               disabled={loading}
             />
+
+            <label htmlFor="message" className="sr-only">
+              Your Message
+            </label>
             <textarea
+              id="message"
               name="message"
               rows={5}
               placeholder="Your Message"
@@ -101,7 +122,9 @@ export default function ContactForm() {
               type="submit"
               disabled={loading}
               className={`${
-                loading ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-500"
+                loading
+                  ? "bg-purple-400 cursor-not-allowed"
+                  : "bg-purple-600 hover:bg-purple-500"
               } text-white font-bold py-3 px-6 rounded-lg transition`}
             >
               {loading ? "Sending..." : "Send Message"}

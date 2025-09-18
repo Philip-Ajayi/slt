@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const volunteerGroupLinks: Record<string, string> = {
   Registration: "https://chat.whatsapp.com/BoAgzTWBA5bBnY1YeMM3kA?mode=ac_t",
@@ -48,7 +49,7 @@ export default function RegistrationForm() {
     volunteerRole: "",
     accommodation: "",
     gender: "",
-    status: "none", // 👈 already in state
+    status: "none",
   });
 
   const [volunteer, setVolunteer] = useState(false);
@@ -154,8 +155,12 @@ export default function RegistrationForm() {
       setVolunteer(false);
       setAccommodation(false);
       setSelectedUnit(null);
-    } catch (err: any) {
-      setMessage({ type: "error", text: err.message });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setMessage({ type: "error", text: err.message });
+      } else {
+        setMessage({ type: "error", text: "An unknown error occurred" });
+      }
     } finally {
       setLoading(false);
     }
@@ -172,10 +177,12 @@ export default function RegistrationForm() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <img
+            <Image
               src="/main/flier.png"
               alt="Salt and Light 2025"
-              className="w-32 h-32 animate-pulse object-contain"
+              width={128}
+              height={128}
+              className="animate-pulse object-contain"
             />
             <p className="mt-4 text-purple-700 font-semibold">
               Redirecting to homepage...
@@ -368,37 +375,28 @@ export default function RegistrationForm() {
 
           {volunteer && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              className="mt-4"
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 space-y-2"
+              transition={{ duration: 0.3 }}
             >
-              <label className="block text-sm font-semibold text-purple-700">
-                Choose a Unit
+              <label className="block mb-2 font-semibold text-purple-700">
+                Select Volunteer Unit
               </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <select
+                name="volunteerRole"
+                value={selectedUnit || ""}
+                onChange={(e) => setSelectedUnit(e.target.value || null)}
+                required={volunteer}
+                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
+              >
+                <option value="">Choose a unit</option>
                 {volunteerUnits.map((unit) => (
-                  <label
-                    key={unit.name}
-                    className={`p-3 border rounded-xl flex items-center space-x-2 cursor-pointer transition ${
-                      selectedUnit === unit.name
-                        ? "bg-purple-100 border-purple-600"
-                        : "hover:bg-purple-50"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="volunteerUnit"
-                      value={unit.name}
-                      checked={selectedUnit === unit.name}
-                      onChange={() => setSelectedUnit(unit.name)}
-                      className="text-purple-600 focus:ring-purple-500"
-                    />
-                    <span className="text-purple-700 font-medium">
-                      {unit.name}
-                    </span>
-                  </label>
+                  <option key={unit.name} value={unit.name}>
+                    {unit.name}
+                  </option>
                 ))}
-              </div>
+              </select>
             </motion.div>
           )}
         </div>
@@ -413,52 +411,57 @@ export default function RegistrationForm() {
               className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
             />
             <span className="font-semibold text-purple-700">
-              I want to request accommodation
+              I will need Accommodation
             </span>
           </label>
 
           {accommodation && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
               className="mt-4"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              <label className="block text-sm font-semibold text-purple-700">
-                Gender (required for accommodation)
+              <label className="block mb-2 font-semibold text-purple-700">
+                Gender
               </label>
               <select
                 name="gender"
                 value={form.gender}
                 onChange={handleChange}
                 required={accommodation}
-                className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
+                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
               >
                 <option value="">Select gender</option>
-                <option value="female">Female</option>
                 <option value="male">Male</option>
+                <option value="female">Female</option>
               </select>
             </motion.div>
           )}
         </div>
 
-        {/* Submit */}
+        {/* Submit button */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-purple-700 hover:bg-purple-800 text-white p-4 rounded-xl font-semibold transition disabled:opacity-50"
+          className="w-full py-3 bg-purple-700 text-white font-semibold rounded-xl hover:bg-purple-800 transition"
         >
           {loading ? "Submitting..." : "Submit Registration"}
         </button>
 
         {/* Message */}
         {message && (
-          <p
-            className={`text-center font-semibold ${
-              message.type === "success" ? "text-green-600" : "text-red-600"
+          <motion.div
+            className={`text-center text-sm mt-4 font-semibold ${
+              message.type === "success"
+                ? "text-green-600"
+                : "text-red-600"
             }`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
           >
             {message.text}
-          </p>
+          </motion.div>
         )}
       </motion.form>
     </>
