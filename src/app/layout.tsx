@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Salt and Light" }],
   icons: {
-    icon: "/main/sltlogo.png",
+    icon: "/favicon.png",
   },
 };
 
