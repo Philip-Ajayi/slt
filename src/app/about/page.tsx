@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import AboutCard from "@/components/about/Card";
 import Timeline from "@/components/about/TimeLine";
 

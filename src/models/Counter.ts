@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const CounterSchema = new Schema({
   year: { type: Number, required: true, unique: true },
