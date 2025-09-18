@@ -14,8 +14,9 @@ export async function GET(req: Request) {
 
     // Use FilterQuery<IUser> to type the MongoDB query object
     const query: FilterQuery<IUser> = { year };
+
     if (accommodation === "true") {
-      query.accommodation = { $ne: "" }; // filter users that have non-empty accommodation
+      query.accommodation = "yes"; // fetch only users with accommodation === "yes"
     }
 
     const users = await User.find(query).lean();
