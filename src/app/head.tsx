@@ -1,6 +1,7 @@
 export default function Head() {
   return (
     <>
+      <title>Salt and Light</title>
       <meta charSet="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta
@@ -13,7 +14,6 @@ export default function Head() {
       />
       <meta name="author" content="Salt and Light" />
       <link rel="icon" href="/main/sltlogo.png" type="image/png" />
-      <title>Salt and Light</title>
     </>
   );
 }
