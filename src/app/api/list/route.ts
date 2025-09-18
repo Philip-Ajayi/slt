@@ -1,7 +1,8 @@
 // app/api/list/route.ts
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/mongodb";
-import { User } from "@/models/User";
+import { User, IUser } from "@/models/User";
+import type { FilterQuery } from "mongoose";
 
 export async function GET(req: Request) {
   try {
@@ -11,9 +12,10 @@ export async function GET(req: Request) {
     const year = parseInt(searchParams.get("year") || "2025");
     const accommodation = searchParams.get("accommodation");
 
-    const query: any = { year };
+    // Use FilterQuery<IUser> to type the MongoDB query object
+    const query: FilterQuery<IUser> = { year };
     if (accommodation === "true") {
-      query.accommodation = { $ne: "" }; // has some value
+      query.accommodation = { $ne: "" }; // filter users that have non-empty accommodation
     }
 
     const users = await User.find(query).lean();

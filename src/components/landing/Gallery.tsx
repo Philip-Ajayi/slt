@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-
+import Image from "next/image";
 
 const gallery = [
   "/gallery/gallery1.jpg",
@@ -36,9 +36,16 @@ export default function Gallery() {
             {doubledGallery.map((img, i) => (
               <div
                 key={"top" + i}
-                className="flex-shrink-0 w-64 h-40 rounded-xl overflow-hidden shadow-lg"
+                className="flex-shrink-0 w-64 h-40 rounded-xl overflow-hidden shadow-lg relative"
               >
-                <img src={img} alt={`Past Event ${i + 1}`} className="w-full h-full object-cover" />
+                <Image
+                  src={img}
+                  alt={`Past Event ${i + 1}`}
+                  fill
+                  sizes="16rem" // 64 * 4 (1rem = 4px by default)
+                  style={{ objectFit: "cover" }}
+                  priority={i < gallery.length} // prioritize first set of images for faster loading
+                />
               </div>
             ))}
           </motion.div>
@@ -55,9 +62,16 @@ export default function Gallery() {
             {doubledGallery.map((img, i) => (
               <div
                 key={"bottom" + i}
-                className="flex-shrink-0 w-64 h-40 rounded-xl overflow-hidden shadow-lg"
+                className="flex-shrink-0 w-64 h-40 rounded-xl overflow-hidden shadow-lg relative"
               >
-                <img src={img} alt={`Past Event ${i + 1}`} className="w-full h-full object-cover" />
+                <Image
+                  src={img}
+                  alt={`Past Event ${i + 1}`}
+                  fill
+                  sizes="16rem"
+                  style={{ objectFit: "cover" }}
+                  priority={i < gallery.length}
+                />
               </div>
             ))}
           </motion.div>

@@ -1,17 +1,20 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Hero() {
   return (
     <div
       className="relative flex items-center justify-center text-center bg-gradient-to-r from-black via-purple-800 to-purple-900"
-      style={{ height: '700px' }} // fixed height here
+      style={{ height: '700px' }}
     >
-      <img
+      <Image
         src="/main/flier.png"
         alt="Salt and Light 2025 Conference"
-        className="absolute inset-0 w-full h-full object-cover opacity-40"
+        fill
+        className="object-cover opacity-40"
+        priority
       />
       <motion.div
         initial={{ opacity: 0, y: 50 }}

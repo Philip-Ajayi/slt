@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
-// Ministers' data with name, title, and image only
 const ministers = [
   {
     name: "Rev. Samson Ajetomobi",
@@ -46,12 +46,12 @@ const ministers = [
   {
     name: "Dr. Lola Ayo-Fashida",
     title: "Finance & Management Consultant",
-    image: "/ministers/Fashida.png", // No image provided
+    image: "", // No image provided
   },
   {
     name: "Evang. Omolara Ayoola",
     title: "",
-    image: "/ministers/Ayoola.png", // No image provided
+    image: "", // No image provided
   },
 ];
 
@@ -69,24 +69,30 @@ export default function Speakers() {
               transition={{ delay: i * 0.1 }}
               className="bg-white rounded-xl shadow-lg overflow-hidden hover:scale-105 transform transition relative group"
             >
-              {/* If there's no image, show a placeholder */}
               {minister.image ? (
-                <img
-                  src={minister.image}
-                  alt={minister.name}
-                  className="w-full h-64 object-cover object-top" // Keeps head visible
-                />
+                <div className="relative w-full h-64">
+                  <Image
+                    src={minister.image}
+                    alt={`${minister.name} portrait`}
+                    fill
+                    sizes="100vw"
+                    style={{ objectFit: "cover", objectPosition: "top" }}
+                    loading="lazy"
+                    priority={i < 4} // prioritize first few images for faster load
+                  />
+                </div>
               ) : (
                 <div className="w-full h-64 bg-gray-300 flex items-center justify-center">
-                  <span className="text-white text-lg">No Image</span>
+                  <span className="text-gray-600 text-lg italic">No Image</span>
                 </div>
               )}
-              
+
               <div className="p-4 text-center">
                 <h3 className="text-lg font-semibold text-purple-700">{minister.name}</h3>
-                <p className="text-gray-600 text-sm">{minister.title}</p>
+                {minister.title && (
+                  <p className="text-gray-600 text-sm">{minister.title}</p>
+                )}
               </div>
-              {/* Removed the black overlay */}
             </motion.div>
           ))}
         </div>

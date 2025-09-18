@@ -5,6 +5,7 @@ import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 
 const staticRoutes = ["Speakers", "About", "Schedule", "Features", "Contact"];
 const toggleRoutes = ["Register", "Volunteer"];
@@ -20,7 +21,10 @@ export default function Navbar() {
   }, []);
 
   return (
-    <Disclosure as="nav" className="bg-gradient-to-r from-purple-800 via-purple-700 to-purple-900 fixed w-full z-50 shadow-lg">
+    <Disclosure
+      as="nav"
+      className="bg-gradient-to-r from-purple-800 via-purple-700 to-purple-900 fixed w-full z-50 shadow-lg"
+    >
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
@@ -28,10 +32,13 @@ export default function Navbar() {
               {/* Left: Logo + Date */}
               <div className="flex items-center space-x-4">
                 <Link href="/" className="flex items-center">
-                  <img
+                  <Image
                     src="/main/sltlogo.png"
                     alt="Supernatural Conference Logo"
-                    className="h-12 w-auto rounded-md shadow-md"
+                    width={48}
+                    height={48}
+                    className="rounded-md shadow-md"
+                    priority
                   />
                 </Link>
                 <span className="hidden sm:inline-block text-purple-200 font-semibold text-sm tracking-wide select-none">

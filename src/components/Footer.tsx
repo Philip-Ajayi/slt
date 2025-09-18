@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   FaInstagram,
   FaFacebookF,
@@ -18,12 +19,17 @@ export default function Footer() {
 
         {/* Column 1: Info */}
         <div>
-          <img
+          <Image
             src="/main/sltlogo.png"
             alt="Salt and Light 2025 Logo"
-            className="mb-4 w-32"
+            width={128}  // 32 * 4 (Tailwind w-32 = 8rem = 128px)
+            height={128} // maintain square or adjust as needed
+            className="mb-4"
+            priority
           />
-          <h3 className="text-xl font-bold mb-2">“A convocation of and for influence on World Mountains”</h3>
+          <h3 className="text-xl font-bold mb-2">
+            “A convocation of and for influence on World Mountains”
+          </h3>
           <p className="text-sm mb-1">📍 Word House, Behind Accord Building, Obadeyi Estate Samonda Ibadan</p>
           <p className="text-sm mb-1">📧 contact@mivwordhouse.com</p>
           <p className="text-sm">📞 +234 (816) 3047-854</p>
