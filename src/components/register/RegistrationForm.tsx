@@ -50,6 +50,8 @@ export default function RegistrationForm() {
     accommodation: "",
     gender: "",
     status: "none",
+    referralSource: "", // ✅ New field
+    otherReferral: "", // ✅ Extra for "Others"
   });
 
   const [volunteer, setVolunteer] = useState(false);
@@ -95,6 +97,12 @@ export default function RegistrationForm() {
     if (volunteer && !selectedUnit) {
       throw new Error("Please select a volunteer unit.");
     }
+    if (!form.referralSource) {
+      throw new Error("Please select how you heard about us.");
+    }
+    if (form.referralSource === "others" && !form.otherReferral) {
+      throw new Error("Please specify your referral source.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -107,6 +115,10 @@ export default function RegistrationForm() {
 
       const payload = {
         ...form,
+        referralSource:
+          form.referralSource === "others"
+            ? form.otherReferral
+            : form.referralSource,
         volunteerRole: volunteer ? selectedUnit || "" : "",
         accommodation: accommodation ? "yes" : "",
       };
@@ -151,6 +163,8 @@ export default function RegistrationForm() {
         accommodation: "",
         gender: "",
         status: "none",
+        referralSource: "",
+        otherReferral: "",
       });
       setVolunteer(false);
       setAccommodation(false);
@@ -302,10 +316,43 @@ export default function RegistrationForm() {
           </div>
         </div>
 
-        {/* Status (first timer / member / none) */}
+        {/* Referral Source */}
         <div>
           <label className="block text-sm font-semibold text-purple-700">
-            Status
+            How did you hear about us?
+          </label>
+          <select
+            name="referralSource"
+            value={form.referralSource}
+            onChange={handleChange}
+            required
+            className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
+          >
+            <option value="">Select an option</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="socialmedia">Other Social Media</option>
+            <option value="billboard">Billboard</option>
+            <option value="friend">Friend</option>
+            <option value="search">Search Engine</option>
+            <option value="others">Others (please specify)</option>
+          </select>
+
+          {form.referralSource === "others" && (
+            <input
+              type="text"
+              name="otherReferral"
+              value={form.otherReferral}
+              onChange={handleChange}
+              placeholder="Please specify"
+              className="w-full mt-3 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
+            />
+          )}
+        </div>
+
+        {/* Status */}
+        <div>
+          <label className="block text-sm font-semibold text-purple-700">
+            I am a...
           </label>
           <select
             name="status"
@@ -314,7 +361,7 @@ export default function RegistrationForm() {
             className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
           >
             <option value="none">None</option>
-            <option value="firstTimer">First Timer</option>
+            <option value="firsttime">First Timer</option>
             <option value="member">Member</option>
           </select>
         </div>
@@ -453,9 +500,7 @@ export default function RegistrationForm() {
         {message && (
           <motion.div
             className={`text-center text-sm mt-4 font-semibold ${
-              message.type === "success"
-                ? "text-green-600"
-                : "text-red-600"
+              message.type === "success" ? "text-green-600" : "text-red-600"
             }`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

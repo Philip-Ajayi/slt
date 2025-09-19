@@ -50,7 +50,7 @@ const ministers = [
   },
   {
     name: "Evang. Omolara Ayoola",
-    title: "",
+    title: "Visioneer of WALL foundation",
     image: "/ministers/Ayoola.png",
   },
 ];

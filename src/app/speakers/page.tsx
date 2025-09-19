@@ -19,13 +19,27 @@ const ministersData = [
     name: "Pastor Ope Rowland",
     title: "Host",
     image: "/ministers/Rowland.png",
-    biography: [],
+    biography: [
+      "Pastor Ope Rowland is a preacher of God's word, public speaker and trainer, consultant and coach, and writer in Nigeria",
+      "He believes in the ministry of every saint. Hence, he talks  and writes about believers finding, grooming and operating in their ministries.",
+      "He currently serves as the Personal Assistant to Rev. Samson Ajetomobi (the President of The Men of Issachar Vision Inc. and Chairman of the Oyo State Chapter of the Pentecostal Fellowship of Nigeria).",
+      "He is also the National Youth Pastor of the Men of Issachar Vision Inc. and the Lead Pastor at MIV Word House, Samonda. Ibadan, Nigeria and he runs an itinerant preaching and teaching ministry across campuses and churches.",
+      "In years past, serving as President of ASF FUTA, President of JCCF FUTA, President of NCCF Enugu, Assistant Pastor of MIV Youth Church (now MIV Harvest House) and other platforms he's been privileged to serve had in no little measure contributed to the hewing of his leadership capacity.",
+      "His marriage to Atinuke Rowland has been a blessing and their children are signs of the wonders to come.",
+    ],
   },
   {
     name: "Apostle Toluwalogo Agboola",
     title: "Founder of His Worship Christian Network (HWCN Global)",
     image: "/ministers/Agboola.png",
-    biography: [],
+    biography: [
+      "Apostle Toluwalogo Oluwapelumi Agboola is the Esteemed Founder of His Worship Christian Network (HWCN Global), born on 23rd November 1982 (age 41 Years old), He is a Seasoned Teacher of Gospel of Christ, talented song Composer, and a dedicated worshiper of Christ.",
+      "In the year 1990, he made a life-changing decision to commit his life to Christ. He pursued his education and obtained a degree in Chemical Engineering from the Federal University of Technology, Minna.",
+      "He is the spiritual son of the esteemed Apostle Arome Osayi, a revered mentor and spiritual father. Apostle Agboola's connection to his spiritual heritage is deeply rooted, and he honors the fatherhood of distinguished Fathers of faith, including Prophet Michael Olaosebikan Adio: A respected spiritual leader and mentor, known for his wisdom and Prophetic guidance. Apostle Agboola acknowledges the spiritual guidance and support received from various spiritual leaders, fostering his growth and ministry.",
+      "With a strong foundation in spiritual guidance, Apostle Toluwalogo Agboola continues to inspire and lead others, perpetuating a legacy of faith, wisdom, and compassion. His connection to his spiritual roots is a testament to the significance of mentorship and the impact of spiritual fatherhood in shaping lives and ministries.",
+      "Apostle Tolu Agboola received a divine commission from God with the powerful mandate to 'Take My Worship to The Ends Of The Earth'. As a result, he now serves as the head of His Worship Christian Network (HWCN Global), which is situated at The Ark of Preservation, Behind Facebook Market, UnderG, in the city of Ogbomoso. His guiding philosophy is deeply rooted in the belief that faith in God forms a solid foundation for the building of destinies.",
+      "Furthermore, Apostle Tolu Agboola found love and happiness in marriage with Mrs. Ademidoyin Agboola, and they solemnized their union in November 2019.",
+    ],
   },
   {
     name: "Pastor Ademola Awoyele",
@@ -82,9 +96,17 @@ const ministersData = [
   },
   {
     name: "Evang. Omolara Ayoola",
-    title: "",
+    title: "Visioneer of WALL foundation",
     image: "/ministers/Ayoola.png",
-    biography: [""],
+    biography: [
+      "Born on October 29th, Princess Omolara Ayoola PMH is a Gospel movie actress, drama minister, script writer, film director and producer. She is also a voice over Artist and a TV/Radio presenter. She graduated from the Department of Mass Communication, Ambrose Alli University Ekpoma.",
+      "Omolara Ayoola, popularly known as PMH (which means Princess of the Most High), is the Visioneer of WALL foundation where she currently serves as a sexual purity minister asides being a Bible Study Teacher at the Sexual Purity Academy (SPA).",
+      "Having spoken at different sister’s conferences both on campuses and NCCF, she is also a teenage teacher at Global Harvest Church Headquarters. She publishes a daily write up on sexual purity via her organisation's social media handles and a weekly video series on sexual purity in Yoruba (which is subtitled in English).",
+      "Omolara Ayoola PMH's ministry, Wall foundation is a sexual purity organization for girls only, aimed at raising ladies of worth and character. The Wall Foundation was born out of a desire to fulfill purpose of helping young ladies discover themselves. The Journey began as far back as 2008 with only 4 teenagers in a living room. But the name WALL Foundation came to being in October 29, 2013 where our members grew up to 9 ladies. WALL is an acronym for WAR AGAINST LUST AND LIES and now we have over 200 ladies both in Nigeria and in Diaspora.",
+      "In aims and objectives, the WALL Foundation seeks to empower young ladies through vocational trainings, thus improving their social economic status. The foundation also offers mentoring for young ladies to stay sexually pure through mentoring classes, programs, seminars and counseling sessions.",
+      "The greater goal is to raise female leaders who would in turn raise other leaders; create a bond between daughters and mothers; cater for the welfare of members and non-members alike in the area of shelter, food, paying of school fees, health and all. The ministry also helps young ladies come out of addiction and educates the girl child on how to avoid molestation and also help victims heal and regain confidence.",
+      "Mrs. Omolara Ayoola is happily married to her heartthrob, Mr. Olugbenga Ayoola SMH. They tied the knot on 13th July, 2009.",
+    ],
   },
 ];
 

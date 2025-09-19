@@ -23,6 +23,7 @@ export interface IUser extends Document {
   year: number;
   uniqueId: string;
   subscribed?: boolean;
+  referralSource?: string; // ✅ New field
   attendance: IAttendance[];
   createdAt: Date;
   updatedAt: Date;
@@ -45,7 +46,7 @@ const UserSchema = new Schema<IUser>(
     schoolOfMinistry: { type: String },
     volunteerRole: { type: String, default: "" },
     accommodation: { type: String },
-    gender: { type: String }, // required if accommodation is provided
+    gender: { type: String },
     status: {
       type: String,
       enum: ["firsttime", "member", "none"],
@@ -54,6 +55,7 @@ const UserSchema = new Schema<IUser>(
     year: { type: Number, required: true },
     uniqueId: { type: String, required: true },
     subscribed: { type: Boolean, default: true },
+    referralSource: { type: String }, // ✅ New field
     attendance: [AttendanceSchema],
   },
   { timestamps: true }
