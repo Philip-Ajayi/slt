@@ -57,7 +57,7 @@ const ministers = [
 
 export default function Speakers() {
   return (
-    <section className="py-20 bg-gradient-to-r from-purple-50 to-purple-100">
+    <section id="about" className="py-20 bg-gradient-to-r from-purple-50 to-purple-100">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-4xl font-bold text-center text-purple-800 mb-12">Our Ministers</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">

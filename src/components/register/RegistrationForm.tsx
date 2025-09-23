@@ -495,6 +495,11 @@ export default function RegistrationForm() {
         >
           {loading ? "Submitting..." : "Submit Registration"}
         </button>
+        {/* Info consent notice */}
+        <p className="text-xs text-gray-500 text-center mt-2">
+          By submitting this form, you agree to share your information with the organizers of Salt and Light 2025 for communication and event-related purposes.
+        </p>
+
 
         {/* Message */}
         {message && (

@@ -4,23 +4,33 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function Hero() {
+  const handleScroll = () => {
+    const target = document.getElementById("about"); // Replace with your section ID
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div
-      className="relative flex items-center justify-center text-center bg-gradient-to-r from-black via-purple-800 to-purple-900"
-      style={{ height: '700px' }}
+      className="relative flex items-center justify-center text-center bg-gradient-to-r from-black via-purple-800 to-purple-900 overflow-hidden"
+      style={{ height: "700px" }}
     >
+      {/* Background Image */}
       <Image
-        src="/main/flier.png"
+        src="/main/flier.jpeg"
         alt="Salt and Light 2025 Conference"
         fill
         className="object-cover object-top opacity-40"
         priority
       />
+
+      {/* Main Text Content */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="relative z-10 px-4 max-w-4xl"
+        className="relative z-10 px-4 max-w-4xl flex flex-col items-center"
       >
         <h1 className="text-white text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-xl">
           Salt and Light 2025
@@ -37,7 +47,9 @@ export default function Hero() {
         <p className="text-purple-100 text-md md:text-lg mb-6 drop-shadow-lg">
           Behind Accord Building, Obadeyi Estate, Samonda, Ibadan
         </p>
-        <div className="flex justify-center gap-4 flex-wrap">
+
+        {/* CTA Buttons */}
+        <div className="flex justify-center gap-4 flex-wrap mb-4">
           <Link
             href="/register"
             className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-6 rounded-lg transition"
@@ -51,6 +63,17 @@ export default function Hero() {
             Contact Us
           </Link>
         </div>
+
+        {/* Scroll Down Indicator (Clickable) */}
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+          className="mt-6 cursor-pointer"
+          onClick={handleScroll}
+        >
+          <p className="text-white text-2xl">↓</p>
+        </motion.div>
       </motion.div>
     </div>
   );
