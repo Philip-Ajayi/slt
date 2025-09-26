@@ -14,11 +14,13 @@ interface User {
   volunteerRole?: string;
   accommodation?: string;
   gender?: string;
-  status: string;
+  status: "firsttime" | "member" | "none";
   year: number;
   uniqueId: string;
+  referralSource?: string;
 }
 
+// Columns to display (all except createdAt, updatedAt, subscribed, attendance)
 const DISPLAY_COLUMNS: (keyof User)[] = [
   "firstName",
   "lastName",
@@ -33,6 +35,7 @@ const DISPLAY_COLUMNS: (keyof User)[] = [
   "status",
   "year",
   "uniqueId",
+  "referralSource",
 ];
 
 export default function UserTable({
@@ -52,7 +55,6 @@ export default function UserTable({
       );
       const data = await res.json();
 
-      // Safely map data without any
       const cleaned = data.map((user: unknown) => {
         const filtered: Partial<User> = {};
         if (typeof user === "object" && user !== null) {
@@ -119,7 +121,7 @@ export default function UserTable({
 
       <div className="overflow-x-auto">
         {users.length > 0 ? (
-          <table className="min-w-full border border-gray-300">
+          <table className="min-w-max border border-gray-300">
             <thead className="bg-gray-100 text-sm">
               <tr>
                 <th className="border px-2 py-1">#</th>

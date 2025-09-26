@@ -9,7 +9,7 @@ import Footer from "../components/Footer";
 // ✅ Metadata export
 export const metadata: Metadata = {
   title: "Salt and Light",
-  description: "Salt and Light - A convocation of and for influence on world mountains",
+  description: "Salt and Light - A convocation of and for influence in the world mountains",
   keywords: [
     "Salt and Light",
     "influence",
