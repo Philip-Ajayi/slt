@@ -21,9 +21,13 @@ function sanitize(str: string) {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
+  console.log("Received POST request"); // <-- Log entry point
+
   const { name, email, message } = await req.json();
+  console.log("Parsed request body:", { name, email, message }); // <-- Log request data
 
   if (!name || !email || !message) {
+    console.log("Missing fields detected");
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 }
@@ -31,6 +35,7 @@ export async function POST(req: Request) {
   }
 
   if (!emailRegex.test(email)) {
+    console.log("Invalid email format:", email);
     return NextResponse.json(
       { error: "Invalid email address" },
       { status: 400 }
@@ -46,6 +51,7 @@ export async function POST(req: Request) {
   }
 
   try {
+    console.log("Sending email...");
     await transporter.sendMail({
       from: `"Salt and Light Contact" <${process.env.EMAIL_USER}>`,
       to: "adeguntimileyin6@gmail.com",
@@ -59,7 +65,7 @@ export async function POST(req: Request) {
         )}</p>
       `,
     });
-
+    console.log("Email sent successfully");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error sending email:", error);
