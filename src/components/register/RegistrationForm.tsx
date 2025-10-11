@@ -407,7 +407,7 @@ export default function RegistrationForm() {
         </div>
 
         {/* Volunteer checkbox */}
-        <div>
+        <div className="hidden">
           <label className="inline-flex items-center space-x-2 cursor-pointer">
             <input
               type="checkbox"

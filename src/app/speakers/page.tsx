@@ -46,7 +46,10 @@ const ministersData = [
     title: "Lead Pastor, Destiny Impact Church",
     image: "/ministers/Awoyele.png",
     biography: [
-      "He's a writer, life coach, an insightful teacher and an inspirational preacher.",
+      "Pastor Demola Awoyele is a dynamic pastor, mentor, trainer, and accomplished author. Together with his wife, Pastor Kemi, he serves as the Senior Pastor of Destiny Impact Church (DIC), Akure, Ondo State, a vibrant church with a clear mandate to empower people to fulfill their God-given destiny. He is also the President of Demola Awoyele Ministries International (DAMI), carrying a global vision to disciple the nations.",
+      "His journey, from humble beginnings to transformative leadership, is a powerful testimony of resilience, divine purpose, and impactful decisions. While studying at the Federal University of Technology, Akure (FUTA), he began his pastoral ministry, faithfully leading the Foursquare Students’ Fellowship (FSF) and later serving with the Joint Christian Campus Fellowship (JCCF). He went on to obtain a Master of Science (M.Sc.) degree from the University of Lagos.",
+      "A gifted teacher of the Word, Pastor Demola ministers with accuracy, power, and deep life-transforming insight. His passion is to equip people to become all God has ordained them to be, building lasting capacity for life and destiny.",
+      "Salt and Light, kindly receive the ministry of Pastor Ademola Awoyele!",
     ],
   },
   {

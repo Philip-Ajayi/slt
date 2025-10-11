@@ -1,15 +1,8 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.zoho.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const FROM_EMAIL = process.env.FROM_EMAIL!;
+const TO_EMAIL = "adeguntimileyin6@gmail.com";
+const RESEND_API_KEY = process.env.RESEND_API_KEY!;
 
 function sanitize(str: string) {
   return str
@@ -21,13 +14,9 @@ function sanitize(str: string) {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
-  console.log("Received POST request"); // <-- Log entry point
-
   const { name, email, message } = await req.json();
-  console.log("Parsed request body:", { name, email, message }); // <-- Log request data
 
   if (!name || !email || !message) {
-    console.log("Missing fields detected");
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 }
@@ -35,14 +24,13 @@ export async function POST(req: Request) {
   }
 
   if (!emailRegex.test(email)) {
-    console.log("Invalid email format:", email);
     return NextResponse.json(
       { error: "Invalid email address" },
       { status: 400 }
     );
   }
 
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  if (!FROM_EMAIL || !RESEND_API_KEY) {
     console.error("Missing email credentials in environment variables");
     return NextResponse.json(
       { error: "Server configuration error" },
@@ -51,21 +39,27 @@ export async function POST(req: Request) {
   }
 
   try {
-    console.log("Sending email...");
-    await transporter.sendMail({
-      from: `"Salt and Light Contact" <${process.env.EMAIL_USER}>`,
-      to: "adeguntimileyin6@gmail.com",
-      subject: "New Contact Form Message",
-      html: `
-        <p><strong>Name:</strong> ${sanitize(name)}</p>
-        <p><strong>Email:</strong> ${sanitize(email)}</p>
-        <p><strong>Message:</strong><br/>${sanitize(message).replace(
-          /\n/g,
-          "<br/>"
-        )}</p>
-      `,
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to: TO_EMAIL,
+        subject: "New Contact Form Message",
+        html: `
+          <p><strong>Name:</strong> ${sanitize(name)}</p>
+          <p><strong>Email:</strong> ${sanitize(email)}</p>
+          <p><strong>Message:</strong><br/>${sanitize(message).replace(
+            /\n/g,
+            "<br/>"
+          )}</p>
+        `,
+      }),
     });
-    console.log("Email sent successfully");
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error sending email:", error);
@@ -75,4 +69,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
