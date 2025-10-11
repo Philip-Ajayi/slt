@@ -1,4 +1,3 @@
-// app/api/attendance/route.ts
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/mongodb";
 import { User } from "@/models/User";
@@ -10,8 +9,12 @@ export async function POST(req: Request) {
     const { userId, session, marked = true } = await req.json();
     const year = new Date().getFullYear();
 
-    if (!userId || session == null)
-      return NextResponse.json({ error: "Missing userId or session" }, { status: 400 });
+    if (!userId || session == null) {
+      return NextResponse.json(
+        { error: "Missing userId or session" },
+        { status: 400 }
+      );
+    }
 
     if (marked) {
       await Attendance.findOneAndUpdate(
@@ -24,9 +27,16 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // ✅ Proper type-safe error handling
     console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+
+    const message =
+      error instanceof Error
+        ? error.message
+        : "An unexpected error occurred.";
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -63,8 +73,15 @@ export async function GET(req: Request) {
     }
 
     return NextResponse.json({ error: "Invalid type" }, { status: 400 });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // ✅ Same pattern here
     console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+
+    const message =
+      error instanceof Error
+        ? error.message
+        : "An unexpected error occurred.";
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

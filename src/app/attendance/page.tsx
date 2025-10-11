@@ -12,16 +12,16 @@ interface User {
   uniqueId: string;
 }
 
+type AttendanceType = "attended" | "absent" | "never";
+
 export default function AttendancePage() {
   const [year, setYear] = useState<number>(2025);
-  const [type, setType] = useState<"attended" | "absent" | "never">("attended");
+  const [type, setType] = useState<AttendanceType>("attended");
   const [users, setUsers] = useState<User[]>([]);
   const [filtered, setFiltered] = useState<User[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [confirming, setConfirming] = useState<{ userId: string; action: string } | null>(
-    null
-  );
+  const [confirming, setConfirming] = useState<{ userId: string; action: "mark" | "unmark" } | null>(null);
 
   async function loadUsers() {
     setLoading(true);
@@ -36,7 +36,7 @@ export default function AttendancePage() {
     loadUsers();
   }, [year, type]);
 
-  // Filter by search query
+  // Filter by search query (case-insensitive)
   useEffect(() => {
     const query = search.toLowerCase();
     setFiltered(
@@ -50,7 +50,7 @@ export default function AttendancePage() {
     );
   }, [search, users]);
 
-  async function handleConfirm(userId: string, action: string) {
+  async function handleConfirm(userId: string, action: "mark" | "unmark") {
     setConfirming({ userId, action });
   }
 
@@ -81,7 +81,9 @@ export default function AttendancePage() {
         <div className="flex gap-2">
           <select
             value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setYear(Number(e.target.value))
+            }
             className="border rounded px-3 py-2 text-sm"
           >
             {[2025, 2024, 2023, 2022].map((y) => (
@@ -93,7 +95,10 @@ export default function AttendancePage() {
 
           <select
             value={type}
-            onChange={(e) => setType(e.target.value as any)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+              const selected = e.target.value as AttendanceType;
+              setType(selected);
+            }}
             className="border rounded px-3 py-2 text-sm"
           >
             <option value="attended">Attended</option>
@@ -106,21 +111,20 @@ export default function AttendancePage() {
           type="text"
           placeholder="Search name, email or ID..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearch(e.target.value)
+          }
           className="border rounded px-3 py-2 w-full sm:w-64 text-sm"
         />
       </div>
 
-      {/* Loading */}
+      {/* Loading / Table */}
       {loading ? (
         <div className="text-center py-8">Loading...</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-8 text-gray-500">No users found.</div>
       ) : (
-        <motion.div
-          layout
-          className="overflow-x-auto border rounded-lg shadow-sm"
-        >
+        <motion.div layout className="overflow-x-auto border rounded-lg shadow-sm">
           <table className="min-w-full text-sm border-collapse">
             <thead className="bg-gray-100 text-gray-700">
               <tr>
@@ -176,7 +180,9 @@ export default function AttendancePage() {
             className="bg-white rounded-xl p-6 w-80 shadow-lg text-center"
           >
             <h3 className="text-lg font-semibold mb-2">
-              {confirming.action === "mark" ? "Mark Attendance" : "Unmark Attendance"}
+              {confirming.action === "mark"
+                ? "Mark Attendance"
+                : "Unmark Attendance"}
             </h3>
             <p className="text-gray-600 mb-5">
               Are you sure you want to{" "}
