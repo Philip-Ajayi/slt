@@ -10,14 +10,23 @@ interface User {
   email: string;
   year: number;
   uniqueId: string;
+  whatsapp?: string;
+  accommodation?: string;
+  gender?: string;
 }
 
-type AttendanceType = "attended" | "absent" | "never";
+type AttendanceType = "attended" | "absent" | "never" | "accommodation";
+
+interface AccommodationResponse {
+  male: User[];
+  female: User[];
+}
 
 export default function AttendancePage() {
   const [year, setYear] = useState<number>(2025);
   const [type, setType] = useState<AttendanceType>("attended");
   const [users, setUsers] = useState<User[]>([]);
+  const [accommodation, setAccommodation] = useState<AccommodationResponse | null>(null);
   const [filtered, setFiltered] = useState<User[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,8 +36,18 @@ export default function AttendancePage() {
     setLoading(true);
     const res = await fetch(`/api/attendance?year=${year}&type=${type}`);
     const data = await res.json();
-    setUsers(data.users || []);
-    setFiltered(data.users || []);
+
+    if (type === "accommodation") {
+      // ✅ Handle grouped accommodation data
+      setAccommodation(data);
+      setUsers([]);
+      setFiltered([]);
+    } else {
+      setUsers(data.users || []);
+      setFiltered(data.users || []);
+      setAccommodation(null);
+    }
+
     setLoading(false);
   }
 
@@ -36,19 +55,18 @@ export default function AttendancePage() {
     loadUsers();
   }, [year, type]);
 
-  // Filter by search query (case-insensitive)
   useEffect(() => {
+    if (type === "accommodation" || !users.length) return;
     const query = search.toLowerCase();
     setFiltered(
       users.filter(
         (u) =>
-          u.firstName.toLowerCase().includes(query) ||
-          u.lastName.toLowerCase().includes(query) ||
-          u.email.toLowerCase().includes(query) ||
-          u.uniqueId.toLowerCase().includes(query)
+          `${u.firstName} ${u.lastName}`.toLowerCase().includes(query) ||
+          u.email?.toLowerCase().includes(query) ||
+          u.uniqueId?.toLowerCase().includes(query)
       )
     );
-  }, [search, users]);
+  }, [search, users, type]);
 
   async function handleConfirm(userId: string, action: "mark" | "unmark") {
     setConfirming({ userId, action });
@@ -71,7 +89,7 @@ export default function AttendancePage() {
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
         Attendance Management
       </h1>
@@ -81,9 +99,7 @@ export default function AttendancePage() {
         <div className="flex gap-2">
           <select
             value={year}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-              setYear(Number(e.target.value))
-            }
+            onChange={(e) => setYear(Number(e.target.value))}
             className="border rounded px-3 py-2 text-sm"
           >
             {[2025, 2024, 2023, 2022].map((y) => (
@@ -95,80 +111,60 @@ export default function AttendancePage() {
 
           <select
             value={type}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              const selected = e.target.value as AttendanceType;
-              setType(selected);
-            }}
+            onChange={(e) => setType(e.target.value as AttendanceType)}
             className="border rounded px-3 py-2 text-sm"
           >
             <option value="attended">Attended</option>
             <option value="absent">Absent</option>
             <option value="never">Never Attended</option>
+            <option value="accommodation">Accommodation</option>
           </select>
         </div>
 
-        <input
-          type="text"
-          placeholder="Search name, email or ID..."
-          value={search}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearch(e.target.value)
-          }
-          className="border rounded px-3 py-2 w-full sm:w-64 text-sm"
-        />
+        {type !== "accommodation" && (
+          <input
+            type="text"
+            placeholder="Search name, email or ID..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border rounded px-3 py-2 w-full sm:w-64 text-sm"
+          />
+        )}
       </div>
 
-      {/* Loading / Table */}
+      {/* Loading / Empty */}
       {loading ? (
         <div className="text-center py-8">Loading...</div>
+      ) : type === "accommodation" ? (
+        <div className="space-y-10">
+          {/* ✅ Male Section */}
+          <div>
+            <h2 className="text-xl font-semibold mb-3">Male Accommodation</h2>
+            {accommodation?.male?.length ? (
+              <UserTable users={accommodation.male} type={type} />
+            ) : (
+              <p className="text-gray-500">No male users found.</p>
+            )}
+          </div>
+
+          {/* ✅ Female Section */}
+          <div>
+            <h2 className="text-xl font-semibold mb-3">Female Accommodation</h2>
+            {accommodation?.female?.length ? (
+              <UserTable users={accommodation.female} type={type} />
+            ) : (
+              <p className="text-gray-500">No female users found.</p>
+            )}
+          </div>
+        </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-8 text-gray-500">No users found.</div>
       ) : (
-        <motion.div layout className="overflow-x-auto border rounded-lg shadow-sm">
-          <table className="min-w-full text-sm border-collapse">
-            <thead className="bg-gray-100 text-gray-700">
-              <tr>
-                <th className="p-3 text-left border">Name</th>
-                <th className="p-3 text-left border">Email</th>
-                <th className="p-3 text-center border">Year</th>
-                <th className="p-3 text-center border">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((u) => (
-                <motion.tr
-                  layout
-                  key={u._id}
-                  className="border-b hover:bg-gray-50 transition"
-                >
-                  <td className="p-3 border">
-                    {u.firstName} {u.lastName}
-                  </td>
-                  <td className="p-3 border">{u.email}</td>
-                  <td className="p-3 text-center border">{u.year}</td>
-                  <td className="p-3 text-center border">
-                    {type !== "attended" && (
-                      <button
-                        onClick={() => handleConfirm(u._id, "mark")}
-                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded text-sm"
-                      >
-                        Mark Present
-                      </button>
-                    )}
-                    {type === "attended" && (
-                      <button
-                        onClick={() => handleConfirm(u._id, "unmark")}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-sm"
-                      >
-                        Unmark
-                      </button>
-                    )}
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        </motion.div>
+        <UserTable
+          users={filtered}
+          type={type}
+          onMark={handleConfirm}
+        />
       )}
 
       {/* Confirmation Modal */}
@@ -180,15 +176,11 @@ export default function AttendancePage() {
             className="bg-white rounded-xl p-6 w-80 shadow-lg text-center"
           >
             <h3 className="text-lg font-semibold mb-2">
-              {confirming.action === "mark"
-                ? "Mark Attendance"
-                : "Unmark Attendance"}
+              {confirming.action === "mark" ? "Mark Attendance" : "Unmark Attendance"}
             </h3>
             <p className="text-gray-600 mb-5">
               Are you sure you want to{" "}
-              <strong>
-                {confirming.action === "mark" ? "mark" : "unmark"}
-              </strong>{" "}
+              <strong>{confirming.action === "mark" ? "mark" : "unmark"}</strong>{" "}
               this user?
             </p>
             <div className="flex justify-center gap-3">
@@ -213,5 +205,74 @@ export default function AttendancePage() {
         </div>
       )}
     </div>
+  );
+}
+
+/* -------------------- 🧩 Reusable Table Component -------------------- */
+function UserTable({
+  users,
+  type,
+  onMark,
+}: {
+  users: User[];
+  type: AttendanceType;
+  onMark?: (userId: string, action: "mark" | "unmark") => void;
+}) {
+  return (
+    <motion.div layout className="overflow-x-auto border rounded-lg shadow-sm">
+      <table className="min-w-full text-sm border-collapse">
+        <thead className="bg-gray-100 text-gray-700">
+          <tr>
+            <th className="p-3 border text-center">S/N</th>
+            <th className="p-3 border text-left">Name</th>
+            <th className="p-3 border text-left">Unique ID</th>
+            {type !== "accommodation" && (
+              <th className="p-3 border text-center">Action</th>
+            )}
+            <th className="p-3 border text-left">WhatsApp</th>
+            <th className="p-3 border text-left">Email</th>
+            <th className="p-3 border text-left">Accommodation</th>
+            <th className="p-3 border text-left">Gender</th>
+            <th className="p-3 border text-center">Year</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {users.map((u, idx) => (
+            <motion.tr key={u._id} layout className="border-b hover:bg-gray-50">
+              <td className="p-3 text-center border">{idx + 1}</td>
+              <td className="p-3 border">{u.firstName} {u.lastName}</td>
+              <td className="p-3 border">{u.uniqueId}</td>
+
+              {type !== "accommodation" && onMark && (
+                <td className="p-3 text-center border">
+                  {type !== "attended" ? (
+                    <button
+                      onClick={() => onMark(u._id, "mark")}
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded text-sm"
+                    >
+                      Mark Present
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => onMark(u._id, "unmark")}
+                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-sm"
+                    >
+                      Unmark
+                    </button>
+                  )}
+                </td>
+              )}
+
+              <td className="p-3 border">{u.whatsapp || "-"}</td>
+              <td className="p-3 border">{u.email || "-"}</td>
+              <td className="p-3 border">{u.accommodation || "-"}</td>
+              <td className="p-3 border">{u.gender || "-"}</td>
+              <td className="p-3 text-center border">{u.year}</td>
+            </motion.tr>
+          ))}
+        </tbody>
+      </table>
+    </motion.div>
   );
 }
