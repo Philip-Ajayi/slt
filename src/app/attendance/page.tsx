@@ -28,7 +28,7 @@ export default function AttendancePage() {
   const [loading, setLoading] = useState(false);
   const [confirming, setConfirming] = useState<{ userId: string; action: "mark" | "unmark" } | null>(null);
 
-  // Load users based on year and type
+  // Load users
   async function loadUsers() {
     setLoading(true);
     const res = await fetch(`/api/attendance?year=${year}&type=${type}`);
@@ -42,7 +42,7 @@ export default function AttendancePage() {
     loadUsers();
   }, [year, type]);
 
-  // Filter by search + gender
+  // Search + gender filtering
   useEffect(() => {
     const query = search.toLowerCase();
     let filteredUsers = users.filter(
@@ -53,7 +53,6 @@ export default function AttendancePage() {
         u.uniqueId?.toLowerCase().includes(query)
     );
 
-    // Apply gender filter (only for accommodation)
     if (type === "accommodation" && genderFilter !== "all") {
       filteredUsers = filteredUsers.filter(
         (u) => u.gender?.toLowerCase() === genderFilter.toLowerCase()
@@ -112,7 +111,7 @@ export default function AttendancePage() {
             value={type}
             onChange={(e) => {
               setType(e.target.value as AttendanceType);
-              setGenderFilter("all"); // reset gender filter on type change
+              setGenderFilter("all");
             }}
             className="border rounded px-3 py-2 text-sm"
           >
@@ -122,7 +121,7 @@ export default function AttendancePage() {
             <option value="accommodation">Accommodation</option>
           </select>
 
-          {/* ✅ Gender Filter (Only for Accommodation) */}
+          {/* Gender Filter for Accommodation */}
           {type === "accommodation" && (
             <select
               value={genderFilter}
@@ -158,15 +157,15 @@ export default function AttendancePage() {
               <tr>
                 <th className="p-3 border text-center">S/N</th>
                 <th className="p-3 border text-left">Name</th>
+                <th className="p-3 border text-center">Unique ID</th>
+                {showAction && <th className="p-3 border text-center">Action</th>}
                 {type !== "accommodation" ? (
                   <>
-                    <th className="p-3 border text-center">Unique ID</th>
                     <th className="p-3 border text-left">WhatsApp</th>
                     <th className="p-3 border text-left">Email</th>
                     <th className="p-3 border text-left">Accommodation</th>
                     <th className="p-3 border text-center">Gender</th>
                     <th className="p-3 border text-center">Year</th>
-                    {showAction && <th className="p-3 border text-center">Action</th>}
                   </>
                 ) : (
                   <>
@@ -184,33 +183,36 @@ export default function AttendancePage() {
                     {u.firstName} {u.lastName}
                   </td>
 
+                  <td className="p-3 text-center border">{u.uniqueId}</td>
+
+                  {/* ✅ Action immediately after Unique ID */}
+                  {showAction && (
+                    <td className="p-3 text-center border">
+                      {type === "attended" ? (
+                        <button
+                          onClick={() => handleConfirm(u._id, "unmark")}
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-sm"
+                        >
+                          Unmark
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleConfirm(u._id, "mark")}
+                          className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded text-sm"
+                        >
+                          Mark Present
+                        </button>
+                      )}
+                    </td>
+                  )}
+
                   {type !== "accommodation" ? (
                     <>
-                      <td className="p-3 text-center border">{u.uniqueId}</td>
                       <td className="p-3 border">{u.whatsapp}</td>
                       <td className="p-3 border">{u.email}</td>
                       <td className="p-3 border">{u.accommodation}</td>
                       <td className="p-3 text-center border">{u.gender}</td>
                       <td className="p-3 text-center border">{u.year}</td>
-                      {showAction && (
-                        <td className="p-3 text-center border">
-                          {type === "attended" ? (
-                            <button
-                              onClick={() => handleConfirm(u._id, "unmark")}
-                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-sm"
-                            >
-                              Unmark
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => handleConfirm(u._id, "mark")}
-                              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded text-sm"
-                            >
-                              Mark Present
-                            </button>
-                          )}
-                        </td>
-                      )}
                     </>
                   ) : (
                     <>
