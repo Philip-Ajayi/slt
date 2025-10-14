@@ -63,8 +63,13 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Missing userId" }, { status: 400 });
     }
 
-    // ✅ Build dynamic update object
-    const update: Record<string, any> = {};
+    // ✅ Explicitly typed update object (no `any`)
+    const update: Partial<{
+      accommodation: string;
+      gender: string;
+      certificatedTraining: string;
+      schoolOfMinistry: string;
+    }> = {};
 
     if (accommodation !== undefined)
       update.accommodation = accommodation.toLowerCase();
