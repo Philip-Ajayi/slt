@@ -46,13 +46,21 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   try {
     await dbConnect();
-    const { userId, accommodation, gender } = await req.json();
+    const { userId, accommodation, gender } = (await req.json()) as {
+      userId?: string;
+      accommodation?: string;
+      gender?: string;
+    };
 
     if (!userId) {
       return NextResponse.json({ error: "Missing userId" }, { status: 400 });
     }
 
-    const update: Record<string, any> = {};
+    // ✅ Type-safe update object
+    const update: Partial<{
+      accommodation: string;
+      gender: string;
+    }> = {};
 
     if (accommodation !== undefined) {
       update.accommodation = accommodation.toLowerCase();
