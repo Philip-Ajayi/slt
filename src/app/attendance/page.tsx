@@ -68,7 +68,7 @@ export default function AttendancePage() {
     loadUsers();
   }, [year, type]);
 
-  // Search + filters
+  // Filters
   useEffect(() => {
     const query = search.toLowerCase();
     let filteredUsers = users.filter(
@@ -92,7 +92,7 @@ export default function AttendancePage() {
     setFiltered(filteredUsers);
   }, [search, users, genderFilter, statusFilter]);
 
-  // Attendance confirm + action
+  // Attendance confirm + execute
   async function handleConfirm(userId: string, action: "mark" | "unmark") {
     setConfirming({ userId, action });
   }
@@ -117,7 +117,7 @@ export default function AttendancePage() {
     await loadUsers();
   }
 
-  // Toggle accommodation
+  // Accommodation toggle
   async function toggleAccommodation(user: User) {
     setUpdatingUserId(user._id);
     const newValue = user.accommodation?.toLowerCase() === "yes" ? "no" : "yes";
@@ -132,7 +132,7 @@ export default function AttendancePage() {
     setUpdatingUserId(null);
   }
 
-  // Set gender
+  // Gender
   async function setGender(userId: string, gender: string) {
     setUpdatingUserId(userId);
     await fetch("/api/attendance", {
@@ -144,33 +144,33 @@ export default function AttendancePage() {
     setUpdatingUserId(null);
   }
 
-  // 🆕 Confirm and set certificated training
-  function confirmCertificatedTraining(userId: string, certificatedTraining: string) {
-    setConfirmingField({ userId, field: "certificatedTraining", value: certificatedTraining });
+  // Training confirmation + set
+  function confirmCertificatedTraining(userId: string, value: string) {
+    setConfirmingField({ userId, field: "certificatedTraining", value });
   }
 
-  async function setCertificatedTraining(userId: string, certificatedTraining: string) {
+  async function setCertificatedTraining(userId: string, value: string) {
     setUpdatingUserId(userId);
     await fetch("/api/attendance", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, certificatedTraining }),
+      body: JSON.stringify({ userId, certificatedTraining: value }),
     });
     await loadUsers();
     setUpdatingUserId(null);
   }
 
-  // 🆕 Confirm and set school of ministry
-  function confirmSchoolOfMinistry(userId: string, schoolOfMinistry: string) {
-    setConfirmingField({ userId, field: "schoolOfMinistry", value: schoolOfMinistry });
+  // School confirmation + set
+  function confirmSchoolOfMinistry(userId: string, value: string) {
+    setConfirmingField({ userId, field: "schoolOfMinistry", value });
   }
 
-  async function setSchoolOfMinistry(userId: string, schoolOfMinistry: string) {
+  async function setSchoolOfMinistry(userId: string, value: string) {
     setUpdatingUserId(userId);
     await fetch("/api/attendance", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, schoolOfMinistry }),
+      body: JSON.stringify({ userId, schoolOfMinistry: value }),
     });
     await loadUsers();
     setUpdatingUserId(null);
@@ -331,57 +331,55 @@ export default function AttendancePage() {
                         className="border rounded px-2 py-1 text-sm"
                         defaultValue=""
                       >
-                        <option value="" disabled>Select</option>
+                        <option value="" disabled>
+                          Select
+                        </option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                       </select>
                     )}
                   </td>
 
-                  {/* Certificated Training */}
+                  {/* ✅ Certificated Training (Reselect Enabled) */}
                   <td className="p-3 text-center border">
-                    {u.certificatedTraining ? (
-                      u.certificatedTraining
-                    ) : (
-                      <select
-                        disabled={updatingUserId === u._id}
-                        onChange={(e) =>
-                          confirmCertificatedTraining(u._id, e.target.value)
-                        }
-                        className="border rounded px-2 py-1 text-sm"
-                        defaultValue=""
-                      >
-                        <option value="" disabled>Select</option>
-                        {CertificatedTrainings.map((ct) => (
-                          <option key={ct} value={ct}>
-                            {ct}
-                          </option>
-                        ))}
-                      </select>
-                    )}
+                    <select
+                      disabled={updatingUserId === u._id}
+                      value={u.certificatedTraining || ""}
+                      onChange={(e) =>
+                        confirmCertificatedTraining(u._id, e.target.value)
+                      }
+                      className="border rounded px-2 py-1 text-sm"
+                    >
+                      <option value="" disabled>
+                        Select
+                      </option>
+                      {CertificatedTrainings.map((ct) => (
+                        <option key={ct} value={ct}>
+                          {ct}
+                        </option>
+                      ))}
+                    </select>
                   </td>
 
-                  {/* School of Ministry */}
+                  {/* ✅ School of Ministry (Reselect Enabled) */}
                   <td className="p-3 text-center border">
-                    {u.schoolOfMinistry ? (
-                      u.schoolOfMinistry
-                    ) : (
-                      <select
-                        disabled={updatingUserId === u._id}
-                        onChange={(e) =>
-                          confirmSchoolOfMinistry(u._id, e.target.value)
-                        }
-                        className="border rounded px-2 py-1 text-sm"
-                        defaultValue=""
-                      >
-                        <option value="" disabled>Select</option>
-                        {SchoolsOfMinistry.map((sm) => (
-                          <option key={sm} value={sm}>
-                            {sm}
-                          </option>
-                        ))}
-                      </select>
-                    )}
+                    <select
+                      disabled={updatingUserId === u._id}
+                      value={u.schoolOfMinistry || ""}
+                      onChange={(e) =>
+                        confirmSchoolOfMinistry(u._id, e.target.value)
+                      }
+                      className="border rounded px-2 py-1 text-sm"
+                    >
+                      <option value="" disabled>
+                        Select
+                      </option>
+                      {SchoolsOfMinistry.map((sm) => (
+                        <option key={sm} value={sm}>
+                          {sm}
+                        </option>
+                      ))}
+                    </select>
                   </td>
 
                   <td className="p-3 border">{u.whatsapp}</td>
@@ -395,89 +393,86 @@ export default function AttendancePage() {
         </motion.div>
       )}
 
-      {/* ✅ Confirmation Modal for Attendance */}
+      {/* Confirmation Modals */}
       {confirming && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-xl p-6 w-80 shadow-lg text-center"
-          >
-            <h3 className="text-lg font-semibold mb-2">
-              {confirming.action === "mark" ? "Mark Attendance" : "Unmark Attendance"}
-            </h3>
-            <p className="text-gray-600 mb-5">
-              Are you sure you want to{" "}
-              <strong>{confirming.action === "mark" ? "mark" : "unmark"}</strong> this user?
-            </p>
-            <div className="flex justify-center gap-3">
-              <button
-                onClick={() => setConfirming(null)}
-                className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={executeAction}
-                className={`px-4 py-2 rounded text-white ${
-                  confirming.action === "mark"
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "bg-red-600 hover:bg-red-700"
-                }`}
-              >
-                Yes
-              </button>
-            </div>
-          </motion.div>
-        </div>
+        <ConfirmModal
+          title={
+            confirming.action === "mark" ? "Mark Attendance" : "Unmark Attendance"
+          }
+          message={`Are you sure you want to ${
+            confirming.action === "mark" ? "mark" : "unmark"
+          } this user?`}
+          onCancel={() => setConfirming(null)}
+          onConfirm={executeAction}
+          confirmColor={
+            confirming.action === "mark" ? "bg-green-600" : "bg-red-600"
+          }
+        />
       )}
 
-      {/* ✅ Confirmation Modal for Training / School */}
       {confirmingField && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-xl p-6 w-80 shadow-lg text-center"
-          >
-            <h3 className="text-lg font-semibold mb-2">
-              Confirm Selection
-            </h3>
-            <p className="text-gray-600 mb-5">
-              Are you sure you want to select{" "}
-              <strong>{confirmingField.value}</strong> as this user’s{" "}
-              <strong>
-                {confirmingField.field === "certificatedTraining"
-                  ? "Certificated Training"
-                  : "School of Ministry"}
-              </strong>
-              ?
-            </p>
-            <div className="flex justify-center gap-3">
-              <button
-                onClick={() => setConfirmingField(null)}
-                className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={async () => {
-                  const { userId, field, value } = confirmingField;
-                  if (field === "certificatedTraining") {
-                    await setCertificatedTraining(userId, value);
-                  } else {
-                    await setSchoolOfMinistry(userId, value);
-                  }
-                  setConfirmingField(null);
-                }}
-                className="px-4 py-2 rounded text-white bg-green-600 hover:bg-green-700"
-              >
-                Yes
-              </button>
-            </div>
-          </motion.div>
-        </div>
+        <ConfirmModal
+          title="Confirm Selection"
+          message={`Are you sure you want to select "${confirmingField.value}" as this user’s ${
+            confirmingField.field === "certificatedTraining"
+              ? "Certificated Training"
+              : "School of Ministry"
+          }?`}
+          onCancel={() => setConfirmingField(null)}
+          onConfirm={async () => {
+            const { userId, field, value } = confirmingField;
+            if (field === "certificatedTraining") {
+              await setCertificatedTraining(userId, value);
+            } else {
+              await setSchoolOfMinistry(userId, value);
+            }
+            setConfirmingField(null);
+          }}
+          confirmColor="bg-green-600"
+        />
       )}
+    </div>
+  );
+}
+
+// ✅ Reusable Confirmation Modal
+function ConfirmModal({
+  title,
+  message,
+  onCancel,
+  onConfirm,
+  confirmColor,
+}: {
+  title: string;
+  message: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+  confirmColor?: string;
+}) {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-white rounded-xl p-6 w-80 shadow-lg text-center"
+      >
+        <h3 className="text-lg font-semibold mb-2">{title}</h3>
+        <p className="text-gray-600 mb-5">{message}</p>
+        <div className="flex justify-center gap-3">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`px-4 py-2 rounded text-white ${confirmColor} hover:opacity-90`}
+          >
+            Yes
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }
