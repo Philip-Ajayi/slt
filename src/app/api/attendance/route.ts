@@ -4,7 +4,7 @@ import { User } from "@/models/User";
 import { Attendance } from "@/models/Attendance";
 
 /**
- * Mark or unmark attendance
+ * ✅ POST — Mark or unmark attendance
  */
 export async function POST(req: Request) {
   try {
@@ -33,41 +33,46 @@ export async function POST(req: Request) {
   } catch (error: unknown) {
     console.error("[POST /api/attendance] Error:", error);
     const message =
-      error instanceof Error
-        ? error.message
-        : "An unexpected error occurred.";
+      error instanceof Error ? error.message : "An unexpected error occurred.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
 /**
- * Update user info (gender / accommodation / other fields)
+ * ✅ PATCH — Update user fields (gender, accommodation, trainings, etc.)
  */
 export async function PATCH(req: Request) {
   try {
     await dbConnect();
-    const { userId, accommodation, gender } = (await req.json()) as {
+
+    const {
+      userId,
+      accommodation,
+      gender,
+      certificatedTraining,
+      schoolOfMinistry,
+    } = (await req.json()) as {
       userId?: string;
       accommodation?: string;
       gender?: string;
+      certificatedTraining?: string;
+      schoolOfMinistry?: string;
     };
 
     if (!userId) {
       return NextResponse.json({ error: "Missing userId" }, { status: 400 });
     }
 
-    // ✅ Type-safe update object
-    const update: Partial<{
-      accommodation: string;
-      gender: string;
-    }> = {};
+    // ✅ Build dynamic update object
+    const update: Record<string, any> = {};
 
-    if (accommodation !== undefined) {
+    if (accommodation !== undefined)
       update.accommodation = accommodation.toLowerCase();
-    }
-    if (gender !== undefined) {
-      update.gender = gender.toLowerCase();
-    }
+    if (gender !== undefined) update.gender = gender.toLowerCase();
+    if (certificatedTraining !== undefined)
+      update.certificatedTraining = certificatedTraining;
+    if (schoolOfMinistry !== undefined)
+      update.schoolOfMinistry = schoolOfMinistry;
 
     const updated = await User.findByIdAndUpdate(userId, update, { new: true });
     if (!updated) {
@@ -78,15 +83,13 @@ export async function PATCH(req: Request) {
   } catch (error: unknown) {
     console.error("[PATCH /api/attendance] Error:", error);
     const message =
-      error instanceof Error
-        ? error.message
-        : "An unexpected error occurred.";
+      error instanceof Error ? error.message : "An unexpected error occurred.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
 /**
- * Fetch users based on attendance type
+ * ✅ GET — Fetch users by attendance type
  */
 export async function GET(req: Request) {
   try {
@@ -95,6 +98,7 @@ export async function GET(req: Request) {
     const year = Number(searchParams.get("year")) || new Date().getFullYear();
     const type = searchParams.get("type") || "attended";
 
+    // ✅ Attended
     if (type === "attended") {
       const attendedUsers = await Attendance.find({ year })
         .populate("user")
@@ -103,6 +107,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ users });
     }
 
+    // ✅ Absent
     if (type === "absent") {
       const attendedIds = await Attendance.find({ year }).distinct("user");
       const absentUsers = await User.find({
@@ -112,6 +117,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ users: absentUsers });
     }
 
+    // ✅ Never attended (across all years)
     if (type === "never") {
       const attendedIds = await Attendance.distinct("user");
       const neverAttended = await User.find({
@@ -120,7 +126,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ users: neverAttended });
     }
 
-    // ✅ New: Accommodation filter
+    // ✅ Accommodation
     if (type === "accommodation") {
       const attendedIds = await Attendance.find({ year }).distinct("user");
       const accommodationUsers = await User.find({
@@ -134,9 +140,7 @@ export async function GET(req: Request) {
   } catch (error: unknown) {
     console.error("[GET /api/attendance] Error:", error);
     const message =
-      error instanceof Error
-        ? error.message
-        : "An unexpected error occurred.";
+      error instanceof Error ? error.message : "An unexpected error occurred.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
