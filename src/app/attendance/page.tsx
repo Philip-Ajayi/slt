@@ -13,12 +13,28 @@ interface User {
   whatsapp?: string;
   accommodation?: string;
   gender?: string;
+  certificatedTraining?: string;
+  schoolOfMinistry?: string;
   status?: "firsttime" | "member" | "none";
 }
 
 type AttendanceType = "attended" | "absent" | "never" | "accommodation";
 type GenderFilter = "all" | "male" | "female";
 type StatusFilter = "all" | "member" | "firsttime";
+
+const CertificatedTrainings = [
+  "Health Safety (HSE)",
+  "Project Management Professional (PMP)",
+  "Data Analysis",
+  "Human Resources Management",
+  "Social Marketing Management",
+];
+
+const SchoolsOfMinistry = [
+  "Arts, Music, Drama, Media Ministries",
+  "Ministry as Pastors, Prophets, Evangelist, Teachers and Church Administrators",
+  "Youth, Campus, Teenagers, School Ministries",
+];
 
 export default function AttendancePage() {
   const [year, setYear] = useState<number>(2025);
@@ -30,6 +46,11 @@ export default function AttendancePage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [loading, setLoading] = useState(false);
   const [confirming, setConfirming] = useState<{ userId: string; action: "mark" | "unmark" } | null>(null);
+  const [confirmingField, setConfirmingField] = useState<{
+    userId: string;
+    field: "certificatedTraining" | "schoolOfMinistry";
+    value: string;
+  } | null>(null);
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
   const [markingUserId, setMarkingUserId] = useState<string | null>(null);
 
@@ -58,14 +79,12 @@ export default function AttendancePage() {
         u.uniqueId?.toLowerCase().includes(query)
     );
 
-    // Gender filter
     if (genderFilter !== "all") {
       filteredUsers = filteredUsers.filter(
         (u) => u.gender?.toLowerCase() === genderFilter.toLowerCase()
       );
     }
 
-    // Status filter
     if (statusFilter !== "all") {
       filteredUsers = filteredUsers.filter((u) => u.status === statusFilter);
     }
@@ -73,7 +92,7 @@ export default function AttendancePage() {
     setFiltered(filteredUsers);
   }, [search, users, genderFilter, statusFilter]);
 
-  // Attendance actions
+  // Attendance confirm + action
   async function handleConfirm(userId: string, action: "mark" | "unmark") {
     setConfirming({ userId, action });
   }
@@ -98,7 +117,7 @@ export default function AttendancePage() {
     await loadUsers();
   }
 
-  // 🆕 Toggle accommodation
+  // Toggle accommodation
   async function toggleAccommodation(user: User) {
     setUpdatingUserId(user._id);
     const newValue = user.accommodation?.toLowerCase() === "yes" ? "no" : "yes";
@@ -113,13 +132,45 @@ export default function AttendancePage() {
     setUpdatingUserId(null);
   }
 
-  // 🆕 Set gender
+  // Set gender
   async function setGender(userId: string, gender: string) {
     setUpdatingUserId(userId);
     await fetch("/api/attendance", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, gender }),
+    });
+    await loadUsers();
+    setUpdatingUserId(null);
+  }
+
+  // 🆕 Confirm and set certificated training
+  function confirmCertificatedTraining(userId: string, certificatedTraining: string) {
+    setConfirmingField({ userId, field: "certificatedTraining", value: certificatedTraining });
+  }
+
+  async function setCertificatedTraining(userId: string, certificatedTraining: string) {
+    setUpdatingUserId(userId);
+    await fetch("/api/attendance", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, certificatedTraining }),
+    });
+    await loadUsers();
+    setUpdatingUserId(null);
+  }
+
+  // 🆕 Confirm and set school of ministry
+  function confirmSchoolOfMinistry(userId: string, schoolOfMinistry: string) {
+    setConfirmingField({ userId, field: "schoolOfMinistry", value: schoolOfMinistry });
+  }
+
+  async function setSchoolOfMinistry(userId: string, schoolOfMinistry: string) {
+    setUpdatingUserId(userId);
+    await fetch("/api/attendance", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, schoolOfMinistry }),
     });
     await loadUsers();
     setUpdatingUserId(null);
@@ -136,20 +187,16 @@ export default function AttendancePage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-6">
         <div className="flex gap-2 items-center flex-wrap">
-          {/* Year Filter */}
           <select
             value={year}
             onChange={(e) => setYear(Number(e.target.value))}
             className="border rounded px-3 py-2 text-sm"
           >
             {[2025, 2024, 2023, 2022].map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
+              <option key={y}>{y}</option>
             ))}
           </select>
 
-          {/* Type Filter */}
           <select
             value={type}
             onChange={(e) => {
@@ -165,7 +212,6 @@ export default function AttendancePage() {
             <option value="accommodation">Accommodation</option>
           </select>
 
-          {/* Gender Filter */}
           <select
             value={genderFilter}
             onChange={(e) => setGenderFilter(e.target.value as GenderFilter)}
@@ -176,7 +222,6 @@ export default function AttendancePage() {
             <option value="female">Female</option>
           </select>
 
-          {/* Status Filter */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
@@ -188,9 +233,7 @@ export default function AttendancePage() {
           </select>
         </div>
 
-        {/* Search */}
         <input
-          type="text"
           placeholder="Search name, email or ID..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -212,10 +255,12 @@ export default function AttendancePage() {
                 <th className="p-3 border text-left">Name</th>
                 <th className="p-3 border text-center">Unique ID</th>
                 {showAction && <th className="p-3 border text-center">Action</th>}
-                <th className="p-3 border text-left">WhatsApp</th>
-                <th className="p-3 border text-left">Email</th>
                 <th className="p-3 border text-center">Accommodation</th>
                 <th className="p-3 border text-center">Gender</th>
+                <th className="p-3 border text-center">Certificated Training</th>
+                <th className="p-3 border text-center">School of Ministry</th>
+                <th className="p-3 border text-left">WhatsApp</th>
+                <th className="p-3 border text-left">Email</th>
                 <th className="p-3 border text-center">Status</th>
                 <th className="p-3 border text-center">Year</th>
               </tr>
@@ -229,93 +274,118 @@ export default function AttendancePage() {
                   </td>
                   <td className="p-3 text-center border">{u.uniqueId}</td>
 
-                  {/* Attendance Action */}
+                  {/* Attendance */}
                   {showAction && (
                     <td className="p-3 text-center border">
                       {type === "attended" ? (
                         <button
                           onClick={() => handleConfirm(u._id, "unmark")}
                           disabled={markingUserId === u._id}
-                          className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded text-sm text-white mx-auto ${
+                          className={`px-3 py-1.5 rounded text-sm text-white ${
                             markingUserId === u._id
                               ? "bg-red-400 cursor-not-allowed"
                               : "bg-red-600 hover:bg-red-700"
                           }`}
                         >
-                          {markingUserId === u._id ? (
-                            <Spinner />
-                          ) : (
-                            "Unmark"
-                          )}
+                          {markingUserId === u._id ? <Spinner /> : "Unmark"}
                         </button>
                       ) : (
                         <button
                           onClick={() => handleConfirm(u._id, "mark")}
                           disabled={markingUserId === u._id}
-                          className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded text-sm text-white mx-auto ${
+                          className={`px-3 py-1.5 rounded text-sm text-white ${
                             markingUserId === u._id
                               ? "bg-green-400 cursor-not-allowed"
                               : "bg-green-600 hover:bg-green-700"
                           }`}
                         >
-                          {markingUserId === u._id ? (
-                            <Spinner />
-                          ) : (
-                            "Mark Present"
-                          )}
+                          {markingUserId === u._id ? <Spinner /> : "Mark Present"}
                         </button>
                       )}
                     </td>
                   )}
 
-                  {/* WhatsApp */}
-                  <td className="p-3 border">{u.whatsapp}</td>
-                  <td className="p-3 border">{u.email}</td>
-
-                  {/* Accommodation toggle */}
+                  {/* Accommodation */}
                   <td className="p-3 text-center border">
-                    {showAction ? (
-                      <button
-                        onClick={() => toggleAccommodation(u)}
-                        disabled={updatingUserId === u._id}
-                        className={`px-3 py-1 rounded text-white flex items-center justify-center mx-auto ${
-                          u.accommodation?.toLowerCase() === "yes"
-                            ? "bg-green-600 hover:bg-green-700"
-                            : "bg-gray-500 hover:bg-gray-600"
-                        } ${updatingUserId === u._id ? "opacity-70 cursor-not-allowed" : ""}`}
-                      >
-                        {updatingUserId === u._id ? <Spinner /> : u.accommodation?.toLowerCase() === "yes" ? "Yes" : "No"}
-                      </button>
-                    ) : (
-                      u.accommodation
-                    )}
+                    <button
+                      onClick={() => toggleAccommodation(u)}
+                      disabled={updatingUserId === u._id}
+                      className={`px-3 py-1 rounded text-white ${
+                        u.accommodation?.toLowerCase() === "yes"
+                          ? "bg-green-600 hover:bg-green-700"
+                          : "bg-gray-500 hover:bg-gray-600"
+                      } ${updatingUserId === u._id ? "opacity-70 cursor-not-allowed" : ""}`}
+                    >
+                      {updatingUserId === u._id ? <Spinner /> : u.accommodation?.toLowerCase() === "yes" ? "Yes" : "No"}
+                    </button>
                   </td>
 
-                  {/* Gender selector */}
+                  {/* Gender */}
                   <td className="p-3 text-center border">
                     {u.gender ? (
                       u.gender
-                    ) : showAction ? (
+                    ) : (
                       <select
                         disabled={updatingUserId === u._id}
                         onChange={(e) => setGender(u._id, e.target.value)}
-                        className={`border rounded px-2 py-1 text-sm ${
-                          updatingUserId === u._id ? "opacity-70 cursor-not-allowed" : ""
-                        }`}
+                        className="border rounded px-2 py-1 text-sm"
                         defaultValue=""
                       >
-                        <option value="" disabled>
-                          Select
-                        </option>
+                        <option value="" disabled>Select</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                       </select>
-                    ) : (
-                      "-"
                     )}
                   </td>
 
-                  {/* Status + Year */}
+                  {/* Certificated Training */}
+                  <td className="p-3 text-center border">
+                    {u.certificatedTraining ? (
+                      u.certificatedTraining
+                    ) : (
+                      <select
+                        disabled={updatingUserId === u._id}
+                        onChange={(e) =>
+                          confirmCertificatedTraining(u._id, e.target.value)
+                        }
+                        className="border rounded px-2 py-1 text-sm"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Select</option>
+                        {CertificatedTrainings.map((ct) => (
+                          <option key={ct} value={ct}>
+                            {ct}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </td>
+
+                  {/* School of Ministry */}
+                  <td className="p-3 text-center border">
+                    {u.schoolOfMinistry ? (
+                      u.schoolOfMinistry
+                    ) : (
+                      <select
+                        disabled={updatingUserId === u._id}
+                        onChange={(e) =>
+                          confirmSchoolOfMinistry(u._id, e.target.value)
+                        }
+                        className="border rounded px-2 py-1 text-sm"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Select</option>
+                        {SchoolsOfMinistry.map((sm) => (
+                          <option key={sm} value={sm}>
+                            {sm}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </td>
+
+                  <td className="p-3 border">{u.whatsapp}</td>
+                  <td className="p-3 border">{u.email}</td>
                   <td className="p-3 text-center border capitalize">{u.status}</td>
                   <td className="p-3 text-center border">{u.year}</td>
                 </motion.tr>
@@ -325,7 +395,7 @@ export default function AttendancePage() {
         </motion.div>
       )}
 
-      {/* Confirmation Modal */}
+      {/* ✅ Confirmation Modal for Attendance */}
       {confirming && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
           <motion.div
@@ -361,11 +431,58 @@ export default function AttendancePage() {
           </motion.div>
         </div>
       )}
+
+      {/* ✅ Confirmation Modal for Training / School */}
+      {confirmingField && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-xl p-6 w-80 shadow-lg text-center"
+          >
+            <h3 className="text-lg font-semibold mb-2">
+              Confirm Selection
+            </h3>
+            <p className="text-gray-600 mb-5">
+              Are you sure you want to select{" "}
+              <strong>{confirmingField.value}</strong> as this user’s{" "}
+              <strong>
+                {confirmingField.field === "certificatedTraining"
+                  ? "Certificated Training"
+                  : "School of Ministry"}
+              </strong>
+              ?
+            </p>
+            <div className="flex justify-center gap-3">
+              <button
+                onClick={() => setConfirmingField(null)}
+                className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  const { userId, field, value } = confirmingField;
+                  if (field === "certificatedTraining") {
+                    await setCertificatedTraining(userId, value);
+                  } else {
+                    await setSchoolOfMinistry(userId, value);
+                  }
+                  setConfirmingField(null);
+                }}
+                className="px-4 py-2 rounded text-white bg-green-600 hover:bg-green-700"
+              >
+                Yes
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
 
-// 🔄 Small reusable spinner component
+// Spinner component
 function Spinner() {
   return (
     <svg
