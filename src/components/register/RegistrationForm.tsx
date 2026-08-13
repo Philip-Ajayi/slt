@@ -4,24 +4,21 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-const volunteerGroupLinks: Record<string, string> = {
-  Registration: "https://chat.whatsapp.com/BoAgzTWBA5bBnY1YeMM3kA?mode=ac_t",
-  Media: "https://chat.whatsapp.com/L9DwyWM1BVcBZdBVFPYIh5?mode=ac_t",
-  Publicity: "https://chat.whatsapp.com/EIxpdUKykTgCeX0AzlqGig?mode=ac_t",
-  Ushering: "https://chat.whatsapp.com/JseeyOoMkaUAFwhxIgCJU5?mode=ac_t",
-  Medicals: "https://chat.whatsapp.com/EHKt04WS8MF90o9gOw0GCm?mode=ac_t",
-  Technical: "https://chat.whatsapp.com/LRk18JC3fNJGY0qRDObJLn?mode=ac_t",
-  Sanitation: "https://chat.whatsapp.com/I08y3bqMKM4Iv6JyFJOrII?mode=ac_t",
-  Greeters: "https://chat.whatsapp.com/Ii1l0mGrHAv3U65CpvLRp1?mode=ac_t",
-  Intercessors: "https://chat.whatsapp.com/FZwx2Fp3eL6Ap6ucfJuoAL",
-  ChildrenTeacher:
-    "https://chat.whatsapp.com/BlzC9DSEu6yC2EWwebpIP0?mode=ac_t",
-};
+// Single WhatsApp group link for all volunteers
+const VOLUNTEER_WHATSAPP_LINK = "https://chat.whatsapp.com/JseeyOoMkaUAFwhxIgCJU5?mode=ac_t";
 
-const volunteerUnits = Object.keys(volunteerGroupLinks).map((name) => ({
-  name,
-  link: volunteerGroupLinks[name],
-}));
+const volunteerUnits = [
+  "Registration",
+  "Media",
+  "Publicity",
+  "Ushering",
+  "Medicals",
+  "Technical",
+  "Sanitation",
+  "Greeters",
+  "Intercessors",
+  "ChildrenTeacher",
+];
 
 const schools = [
   "Arts, Music, Drama, Media Ministries",
@@ -50,8 +47,8 @@ export default function RegistrationForm() {
     accommodation: "",
     gender: "",
     status: "none",
-    referralSource: "", // ✅ New field
-    otherReferral: "", // ✅ Extra for "Others"
+    referralSource: "",
+    otherReferral: "",
   });
 
   const [volunteer, setVolunteer] = useState(false);
@@ -59,9 +56,10 @@ export default function RegistrationForm() {
   const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<
-    { type: "success" | "error"; text: string } | null
-  >(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const [redirecting, setRedirecting] = useState(false);
   const [showVolunteerModal, setShowVolunteerModal] = useState(false);
@@ -140,9 +138,8 @@ export default function RegistrationForm() {
       if (volunteer && selectedUnit) {
         setShowVolunteerModal(true);
         setTimeout(() => {
-          const unitLink =
-            volunteerUnits.find((u) => u.name === selectedUnit)?.link || "/";
-          window.location.href = unitLink;
+          // Redirects everyone to the single WhatsApp link
+          window.location.href = VOLUNTEER_WHATSAPP_LINK;
         }, 3000);
       } else {
         setRedirecting(true);
@@ -224,14 +221,10 @@ export default function RegistrationForm() {
                 Volunteer Registration
               </h2>
               <p className="text-gray-700 mb-6">
-                Thank you for volunteering! You’ll be redirected to your{" "}
-                <span className="font-semibold text-purple-600">
-                  {selectedUnit}
-                </span>{" "}
-                page shortly...
+                Thank you for volunteering! You’ll be redirected to the WhatsApp group shortly...
               </p>
               <div className="animate-pulse text-purple-600 font-medium">
-                Redirecting...
+                Redirecting to WhatsApp...
               </div>
             </motion.div>
           </motion.div>
@@ -407,7 +400,7 @@ export default function RegistrationForm() {
         </div>
 
         {/* Volunteer checkbox */}
-        <div className="hidden">
+        <div>
           <label className="inline-flex items-center space-x-2 cursor-pointer">
             <input
               type="checkbox"
@@ -439,8 +432,8 @@ export default function RegistrationForm() {
               >
                 <option value="">Choose a unit</option>
                 {volunteerUnits.map((unit) => (
-                  <option key={unit.name} value={unit.name}>
-                    {unit.name}
+                  <option key={unit} value={unit}>
+                    {unit}
                   </option>
                 ))}
               </select>
@@ -499,7 +492,6 @@ export default function RegistrationForm() {
         <p className="text-xs text-gray-500 text-center mt-2">
           By submitting this form, you agree to share your information with the organizers of Salt and Light 2025 for communication and event-related purposes.
         </p>
-
 
         {/* Message */}
         {message && (
