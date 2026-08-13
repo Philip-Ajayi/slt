@@ -68,17 +68,19 @@ export async function GET() {
       return NextResponse.json({
         message: `Successfully sent batch #${BATCH_NUMBER + 1} (${users.length} recipients).`,
       });
-    } catch (err: any) {
-      console.error(`❌ Error sending batch #${BATCH_NUMBER + 1}:`, err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      console.error(`❌ Error sending batch #${BATCH_NUMBER + 1}:`, errorMessage);
       return NextResponse.json(
-        { error: err.message, batch: BATCH_NUMBER + 1 },
+        { error: errorMessage, batch: BATCH_NUMBER + 1 },
         { status: 500 }
       );
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     console.error("Server error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error", details: errorMessage },
       { status: 500 }
     );
   }
