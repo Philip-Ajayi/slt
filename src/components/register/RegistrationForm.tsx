@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 // Single WhatsApp group link for all volunteers
-const VOLUNTEER_WHATSAPP_LINK = "https://chat.whatsapp.com/JseeyOoMkaUAFwhxIgCJU5?mode=ac_t";
+const VOLUNTEER_WHATSAPP_LINK = "https://chat.whatsapp.com/ER45aKxd0sjC2SEGrCalZA?s=cl&p=i&ilr=4";
 
 const volunteerUnits = [
   "Registration",
