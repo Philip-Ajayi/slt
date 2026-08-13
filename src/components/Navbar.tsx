@@ -71,7 +71,7 @@ export default function Navbar() {
                   />
                 </Link>
                 <span className="hidden sm:inline-block text-purple-200 font-semibold text-sm tracking-wide select-none">
-                  Oct 13 - 17, 2025
+                  Oct 12 - 16, 2026
                 </span>
               </div>
 
@@ -143,7 +143,7 @@ export default function Navbar() {
                 );
               })}
               <div className="mt-4 px-4 py-2 text-purple-300 font-semibold text-center text-sm select-none">
-                October 13 - 17, 2025
+                October 12 - 16, 2026
               </div>
             </div>
           </Disclosure.Panel>

@@ -18,8 +18,8 @@ export default function Hero() {
     >
       {/* Background Image */}
       <Image
-        src="/main/flier.jpeg"
-        alt="Salt and Light 2025 Conference"
+        src="/main/flyer.jpg"
+        alt="Salt and Light 2026 Conference"
         fill
         className="object-cover object-top opacity-40"
         priority
@@ -33,7 +33,7 @@ export default function Hero() {
         className="relative z-10 px-4 max-w-4xl flex flex-col items-center"
       >
         <h1 className="text-white text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-xl">
-          Salt and Light 2025
+          Salt and Light 2026
         </h1>
         <p className="text-purple-100 text-lg md:text-2xl mb-4 drop-shadow-lg italic">
           “A Convocation of and for Influence in the World Mountains”
@@ -42,7 +42,7 @@ export default function Hero() {
           Organized by <span className="font-bold">MIV Word House</span>
         </p>
         <p className="text-purple-100 text-lg md:text-xl mb-2 drop-shadow-lg">
-          October 13 - 17, 2025
+          October 12 - 16, 2026
         </p>
         <p className="text-purple-100 text-md md:text-lg mb-6 drop-shadow-lg">
           Behind Accord Building, Obadeyi Estate, Samonda, Ibadan

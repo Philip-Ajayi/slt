@@ -27,31 +27,37 @@ const ministers = [
     name: "Pastor Yomi Ajayi",
     title: "Pastor, Christ Life Church",
     image: "/ministers/Ajayi.png",
+    hidden: true,
   },
   {
     name: "Joshua Mike-Bamiloye",
     title: "Gospel Singer, Filmmaker & Evangelist",
     image: "/ministers/Bamiloye.png",
+    hidden: true,
   },
   {
     name: "Dr. Olayinka Kotila",
     title: "Lecturer, Pharmaceutical Chemistry, University of Ibadan",
     image: "/ministers/Kotila.png",
+    hidden: true,
   },
   {
     name: "Pastor Femi Dairo",
     title: "Director of Sapphire Pre-varsity",
     image: "/ministers/Dairo.png",
+    hidden: true,
   },
   {
     name: "Dr. Lola Ayo-Fashida",
     title: "Finance & Management Consultant",
     image: "/ministers/Fashida.png", 
+    hidden: true,
   },
   {
     name: "Evang. Omolara Ayoola",
     title: "Visioneer of WALL foundation",
     image: "/ministers/Ayoola.png",
+    hidden: true,
   },
 ];
 
@@ -61,7 +67,9 @@ export default function Speakers() {
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-4xl font-bold text-center text-purple-800 mb-12">Our Ministers</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {ministers.map((minister, i) => (
+        {ministers
+          .filter((minister) => !minister.hidden)
+          .map((minister, i) => (
             <motion.div
               key={minister.name}
               initial={{ opacity: 0, y: 30 }}

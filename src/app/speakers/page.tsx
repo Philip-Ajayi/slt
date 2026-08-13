@@ -54,6 +54,7 @@ const ministersData = [
   },
   {
     name: "Pastor Yomi Ajayi",
+    hidden: true,
     title: "Pastor, Christ Life Church",
     image: "/ministers/Ajayi.png",
     biography: [
@@ -62,6 +63,7 @@ const ministersData = [
   },
   {
     name: "Joshua Mike-Bamiloye",
+    hidden: true,
     title: "Gospel Singer, Filmmaker & Evangelist",
     image: "/ministers/Bamiloye.png",
     biography: [
@@ -70,6 +72,7 @@ const ministersData = [
   },
   {
     name: "Dr. Olayinka Kotila",
+    hidden: true,
     title: "Lecturer, Pharmaceutical Chemistry, University of Ibadan",
     image: "/ministers/Kotila.png",
     biography: [
@@ -78,6 +81,7 @@ const ministersData = [
   },
   {
     name: "Pastor Femi  Dairo",
+    hidden: true,
     title: "Director of Sapphire Pre-varsity",
     image: "/ministers/Dairo.png",
     biography: [
@@ -91,6 +95,7 @@ const ministersData = [
   },
   {
     name: "Dr. Lola Ayo-Fashida",
+    hidden: true,
     title: "Finance & Management Consultant",
     image: "/ministers/Fashida.png",
     biography: [
@@ -99,6 +104,7 @@ const ministersData = [
   },
   {
     name: "Evang. Omolara Ayoola",
+    hidden: true,
     title: "Visioneer of WALL foundation",
     image: "/ministers/Ayoola.png",
     biography: [
@@ -121,16 +127,18 @@ export default function SpeakersPage() {
           Meet Our Ministers
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {ministersData.map((speaker, i) => (
-            <motion.div
-              key={speaker.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <Speaker {...speaker} />
-            </motion.div>
-          ))}
+          {ministersData
+            .filter((speaker) => !speaker.hidden)
+            .map((speaker, i) => (
+              <motion.div
+                key={speaker.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Speaker {...speaker} />
+              </motion.div>
+            ))}
         </div>
       </div>
     </div>
