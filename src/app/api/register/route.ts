@@ -110,7 +110,7 @@ export async function POST(req: Request) {
               <p><strong>Your Unique ID:</strong> ${uniqueId}</p>
               <p>Please scan or show the attached QR code for quick check-in.</p>
               <hr style="border-top: 2px solid #6a0dad;" />
-              <p><strong>Date:</strong> October 13–17, 2025</p>
+              <p><strong>Date:</strong> October 12–16, 2026</p>
               <p><strong>Venue:</strong> Behind Accord Building, Obadeyi Estate, Samonda, Ibadan</p>
               <p style="color: #6a0dad; font-weight: 600;">Thank you!</p>
             </div>
