@@ -10,7 +10,7 @@ export default function Page() {
         <p className="text-center text-lg text-gray-700 mb-12">
           Fill in your details below to secure your spot at{" "}
           <span className="font-semibold text-purple-700">
-            Salt and Light 2025
+            Salt and Light 2026
           </span>. We can’t wait to see you!
         </p>
         <RegistrationForm />
